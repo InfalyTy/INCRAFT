@@ -12,7 +12,7 @@
       background: #1e1e1e;
       color: #fff;
       text-align: center;
-      animation: fadeIn 1s ease-in;
+      /* Ya no hay fadeIn general para no ocultar la web */
     }
 
     header {
@@ -88,11 +88,6 @@
       text-decoration: underline;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to   { opacity: 1; }
-    }
-
     @keyframes slideIn {
       to {
         opacity: 1;
@@ -119,8 +114,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      animation: shrinkBlock 0.5s ease forwards;
-      animation-delay: 0.2s;
+      animation: shrinkBlock 1.2s ease forwards;
+      animation-delay: 1s;
     }
 
     #intro-block img {
@@ -134,7 +129,6 @@
     @keyframes shrinkBlock {
       to {
         transform: scale(0);
-        opacity: 0;
         visibility: hidden;
       }
     }
@@ -142,7 +136,7 @@
 </head>
 <body>
   <div id="intro-block">
-    <img src="minecraft-dirt.png" alt="Bloc Minecraft">
+    <img src="minecraft-dirt.png" alt="Bloc Minecraft" />
   </div>
 
   <header>
@@ -175,12 +169,12 @@
   </footer>
 
   <script>
-    // Animación de intro: oculta el bloque después de la animación
+    // Animación intro bloque tierra Minecraft: oculta el bloque tras la animación
     window.addEventListener("DOMContentLoaded", () => {
       const intro = document.getElementById("intro-block");
       setTimeout(() => {
         intro.style.display = "none";
-      }, 700); // 0.2s delay + 0.5s animación
+      }, 2200); // 1s delay + 1.2s animación
     });
 
     // Mostrar mantenimiento si está activado
