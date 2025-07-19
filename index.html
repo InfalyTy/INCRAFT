@@ -19,7 +19,7 @@
 
     <section id="server-status">
       <h2>Estado del Servidor</h2>
-      <p><strong>IP:</strong> <span id="server-ip">play.incraft.network</span> <button onclick="copyIP()">Copiar IP</button></p>
+      <p><strong>IP:</strong> <span id="server-ip">incraft.ddns.net</span> <button onclick="copyIP()">Copiar IP</button></p>
       <p><strong>Estado:</strong> <span id="status">Cargando...</span></p>
       <p><strong>Jugadores:</strong> <span id="players">-</span></p>
     </section>
@@ -36,7 +36,7 @@
 
   <script>
     function copyIP() {
-      navigator.clipboard.writeText("play.incraft.network");
+      navigator.clipboard.writeText("incraft.ddns.net");
       alert("IP copiada al porta-retalls!");
     }
 
@@ -45,7 +45,7 @@
       document.getElementById("maintenance-message").classList.remove("hidden");
       document.getElementById("server-status").style.display = "none";
     } else {
-      fetch("https://api.mcsrvstat.us/2/play.incraft.network")
+      fetch("https://api.mcsrvstat.us/2/incraft.ddns.net")
         .then(res => res.json())
         .then(data => {
           document.getElementById("status").textContent = data.online ? "Online" : "Offline";
