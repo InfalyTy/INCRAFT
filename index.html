@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ca">
+<html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,7 +8,7 @@
 </head>
 <body>
   <header>
-    <img src="incraft-network-logo.png" alt="INCRAFT Logo" class="logo" />
+    <img src="incraft-network-logo.png" alt="Logo de INCRAFT" class="logo" />
     <h1>¡Únete a la aventura en <span>INCRAFT NETWORK</span>!</h1>
   </header>
 
@@ -22,22 +22,22 @@
       <p><strong>IP:</strong> <span id="server-ip">incraft.ddns.net</span> <button onclick="copyIP()">Copiar IP</button></p>
       <p><strong>Estado:</strong> <span id="status">Cargando...</span></p>
       <p><strong>Jugadores:</strong> <span id="players">-</span></p>
+      <a href="https://bit.ly/pos-incraft" class="postulacion-btn">📨 Postulación</a>
     </section>
   </main>
 
   <footer>
-    <p>Síguenos a les xarxes: 
-      <a href="#">Twitter</a> | 
-      <a href="#">Discord</a> | 
-      <a href="#">YouTube</a>
+    <p>Síguenos en las redes: 
+      <a href="https://discord.gg/APrYRZUqBT">Discord</a> | 
+      <a href="https://youtube.com/@incraftnetwork">YouTube</a>
     </p>
-    <p>&copy; 2025 INCRAFT NETWORK. Tots els drets reservats.</p>
+    <p>&copy; 2025 INCRAFT NETWORK. Todos los derechos reservados.</p>
   </footer>
 
   <script>
     function copyIP() {
       navigator.clipboard.writeText("incraft.ddns.net");
-      alert("IP copiada al porta-retalls!");
+      alert("¡IP copiada al portapapeles!");
     }
 
     const maintenance = localStorage.getItem("maintenance") === "true";
