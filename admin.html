@@ -1,23 +1,23 @@
 <!DOCTYPE html>
-<html lang="ca">
+<html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin - INCRAFT NETWORK</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-<body>
+<body class="admin-body">
   <header>
-    <h1>Panell d'administració</h1>
+    <h1>Panel de Administración</h1>
   </header>
   <main>
-    <div id="login-section">
-      <input type="password" id="admin-pass" placeholder="Contrasenya d'accés" />
+    <div id="login-section" class="admin-box">
+      <input type="password" id="admin-pass" placeholder="Contraseña de acceso" />
       <button onclick="checkPassword()">Entrar</button>
     </div>
-    <div id="admin-panel" class="hidden">
+    <div id="admin-panel" class="admin-box hidden">
       <label>
-        <input type="checkbox" id="maintenance-toggle" /> Activar mode manteniment
+        <input type="checkbox" id="maintenance-toggle" /> Activar modo mantenimiento
       </label>
     </div>
   </main>
@@ -27,7 +27,7 @@
   </footer>
 
   <script>
-    const PASSWORD = "incraft123"; // Pots canviar-ho per una altra
+    const PASSWORD = "incraft123";
 
     function checkPassword() {
       const input = document.getElementById("admin-pass").value;
@@ -36,7 +36,7 @@
         document.getElementById("admin-panel").classList.remove("hidden");
         initToggle();
       } else {
-        alert("Contrasenya incorrecta");
+        alert("Contraseña incorrecta");
       }
     }
 
@@ -45,7 +45,7 @@
       toggle.checked = localStorage.getItem("maintenance") === "true";
       toggle.addEventListener("change", () => {
         localStorage.setItem("maintenance", toggle.checked);
-        alert("Estat de manteniment actualitzat!");
+        alert("¡Estado de mantenimiento actualizado!");
       });
     }
   </script>
