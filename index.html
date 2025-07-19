@@ -125,15 +125,18 @@
     /* Fondo animado barras amarillas y negras para mantenimiento */
     #maintenance-message {
       position: relative;
-      background: repeating-linear-gradient(
-        45deg,
-        #ffeb3b 0,
-        #ffeb3b 40px,
-        #000000 40px,
-        #000000 80px
+      background: linear-gradient(
+        135deg,
+        #ffeb3b 25%, 
+        #000 25%, 
+        #000 50%, 
+        #ffeb3b 50%, 
+        #ffeb3b 75%, 
+        #000 75%, 
+        #000 100%
       );
-      background-size: 160px 160px;
-      animation: moveStripes 6s linear infinite;
+      background-size: 56.57px 56.57px; /* sqrt(2)*40 */
+      animation: slideStripes 8s linear infinite;
       color: white;
       padding: 30px;
       border-radius: 12px;
@@ -144,14 +147,15 @@
       box-shadow: 0 0 15px 3px rgba(255, 235, 59, 0.7);
       text-shadow: 0 0 5px black;
       display: none;
+      overflow: hidden;
     }
 
-    @keyframes moveStripes {
+    @keyframes slideStripes {
       0% {
         background-position: 0 0;
       }
       100% {
-        background-position: 160px 0;
+        background-position: 56.57px 0;
       }
     }
   </style>
