@@ -60,24 +60,24 @@
       background-color: #44dd44;
     }
 
-    /* Container para modo mantenimiento */
-    #maintenance-container {
+    /* Container para toggles */
+    .toggle-container {
       margin-top: 1.5rem;
       padding: 1.2rem 1.5rem;
       background: #222;
       border: 2px solid #55ff55;
       border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 1.2rem;
-      color: #55ff55;
-      user-select: none;
+      box-shadow: 0 0 12px #55ff55aa;
       max-width: 320px;
       margin-left: auto;
       margin-right: auto;
-      box-shadow: 0 0 12px #55ff55aa;
+      user-select: none;
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: #55ff55;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
     }
 
     /* Toggle personalizado */
@@ -119,9 +119,6 @@
       border-radius: 50%;
       transition: transform 0.4s ease, background-color 0.4s ease;
       box-shadow: 0 0 4px #000 inset;
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
 
     /* Cuando está checked */
@@ -134,26 +131,6 @@
       background-color: #000;
       box-shadow: 0 0 10px #55ff55;
     }
-
-    /* Tick SVG en el circulo */
-    .slider::after {
-      content: "";
-      position: absolute;
-      top: 6px;
-      left: 10px;
-      width: 8px;
-      height: 14px;
-      border: solid #55ff55;
-      border-width: 0 3px 3px 0;
-      transform: rotate(45deg);
-      opacity: 0;
-      transition: opacity 0.3s ease 0.1s;
-      pointer-events: none;
-    }
-    input:checked + .slider::after {
-      opacity: 1;
-    }
-
   </style>
 </head>
 <body>
@@ -169,13 +146,23 @@
     </div>
 
     <div id="admin-panel" class="admin-box hidden">
-      <label for="maintenance-toggle" id="maintenance-container">
-        Modo mantenimiento
-        <span class="toggle-switch">
-          <input type="checkbox" id="maintenance-toggle" />
-          <span class="slider"></span>
-        </span>
-      </label>
+      <div class="toggle-container">
+        <label for="maintenance-toggle">
+          Modo mantenimiento
+          <span class="toggle-switch">
+            <input type="checkbox" id="maintenance-toggle" />
+            <span class="slider"></span>
+          </span>
+        </label>
+
+        <label for="postulacion-toggle">
+          Mostrar botón postulación
+          <span class="toggle-switch">
+            <input type="checkbox" id="postulacion-toggle" />
+            <span class="slider"></span>
+          </span>
+        </label>
+      </div>
     </div>
   </main>
 
@@ -191,18 +178,30 @@
     if (input === PASSWORD) {
       document.getElementById("login-section").style.display = "none";
       document.getElementById("admin-panel").classList.remove("hidden");
-      initToggle();
+      initToggles();
     } else {
       alert("Contraseña incorrecta");
     }
   }
 
-  function initToggle() {
-    const toggle = document.getElementById("maintenance-toggle");
-    toggle.checked = localStorage.getItem("maintenance") === "true";
-    toggle.addEventListener("change", () => {
-      localStorage.setItem("maintenance", toggle.checked);
+  function initToggles() {
+    const maintenanceToggle = document.getElementById("maintenance-toggle");
+    const postulacionToggle = document.getElementById("postulacion-toggle");
+
+    // Cargar estado de mantenimiento
+    maintenanceToggle.checked = localStorage.getItem("maintenance") === "true";
+    // Cargar estado de mostrar botón postulación (por defecto true si no hay valor)
+    const showPostulacion = localStorage.getItem("showPostulacion");
+    postulacionToggle.checked = showPostulacion === null ? true : showPostulacion === "true";
+
+    maintenanceToggle.addEventListener("change", () => {
+      localStorage.setItem("maintenance", maintenanceToggle.checked);
       alert("¡Estado de mantenimiento actualizado!");
+    });
+
+    postulacionToggle.addEventListener("change", () => {
+      localStorage.setItem("showPostulacion", postulacionToggle.checked);
+      alert("¡Estado del botón de postulación actualizado!");
     });
   }
 </script>
