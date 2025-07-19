@@ -2,58 +2,212 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>INCRAFT NETWORK</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="incraft-network-logo.png" type="image/png" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #1e1e1e;
+      color: #fff;
+      text-align: center;
+      animation: fadeIn 1s ease-in;
+    }
+
+    header {
+      padding: 20px;
+    }
+
+    header img {
+      width: 160px;
+      height: auto;
+      transition: transform 0.4s ease;
+    }
+
+    header img:hover {
+      transform: scale(1.05);
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+    }
+
+    .section {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: slideIn 0.8s ease forwards;
+      animation-delay: 0.3s;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    #server-status {
+      background-color: #2c2c2c;
+      border-radius: 12px;
+      padding: 20px;
+      margin: 20px auto;
+      width: 90%;
+      max-width: 400px;
+    }
+
+    button, a.button {
+      background-color: #3b3b3b;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      margin: 10px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.3s ease, transform 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    button:hover, a.button:hover {
+      background-color: #555;
+      transform: scale(1.05);
+    }
+
+    footer {
+      background-color: #121212;
+      padding: 20px;
+      margin-top: 40px;
+      font-size: 0.9rem;
+    }
+
+    a {
+      color: #72b4ff;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    @keyframes slideIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    #maintenance-message {
+      background-color: #ff4444;
+      color: white;
+      padding: 30px;
+      border-radius: 12px;
+      font-size: 1.4rem;
+      margin: 30px auto;
+      max-width: 600px;
+    }
+
+    /* Intro bloque de tierra Minecraft */
+    #intro-block {
+      position: fixed;
+      z-index: 9999;
+      inset: 0;
+      background-color: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: shrinkBlock 0.5s ease forwards;
+      animation-delay: 0.2s;
+    }
+
+    #intro-block img {
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      max-width: none;
+      max-height: none;
+    }
+
+    @keyframes shrinkBlock {
+      to {
+        transform: scale(0);
+        opacity: 0;
+        visibility: hidden;
+      }
+    }
+  </style>
 </head>
 <body>
+  <div id="intro-block">
+    <img src="minecraft-dirt.png" alt="Bloc Minecraft">
+  </div>
+
   <header>
-    <img src="incraft-network-logo.png" alt="Logo de INCRAFT" class="logo" />
-    <h1>¡Únete a la aventura en <span>INCRAFT NETWORK</span>!</h1>
+    <img src="incraft-network-logo.png" alt="INCRAFT Logo" />
+    <h1>¡Únete a la aventura en INCRAFT NETWORK!</h1>
   </header>
 
-  <main>
-    <div id="maintenance-message" class="hidden">
-      🛠️ Servidor en mantenimiento. Vuelve pronto.
+  <div id="maintenance-message" style="display: none;">
+    🛠️ Servidor en mantenimiento. Vuelve pronto.
+  </div>
+
+  <div id="main-content">
+    <div id="server-status" class="section">
+      <h2>Estado del servidor</h2>
+      <p id="status">Cargando...</p>
+      <p id="players"></p>
+      <p><strong>IP:</strong> <span id="server-ip">incraft.ddns.net</span></p>
+      <button onclick="copyIP()">Copiar IP</button>
     </div>
 
-    <section id="server-status">
-      <h2>Estado del Servidor</h2>
-      <p><strong>IP:</strong> <span id="server-ip">incraft.ddns.net</span> <button onclick="copyIP()">Copiar IP</button></p>
-      <p><strong>Estado:</strong> <span id="status">Cargando...</span></p>
-      <p><strong>Jugadores:</strong> <span id="players">-</span></p>
-      <a href="https://bit.ly/pos-incraft" class="postulacion-btn">📨 Postulación</a>
-    </section>
-  </main>
+    <a class="button" href="https://bit.ly/pos-incraft" target="_blank">📋 Postulación</a>
+  </div>
 
   <footer>
     <p>Síguenos en las redes: 
-      <a href="https://discord.gg/APrYRZUqBT">Discord</a> | 
-      <a href="https://youtube.com/@incraftnetwork">YouTube</a>
+      <a href="https://discord.gg/APrYRZUqBT" target="_blank">Discord</a> | 
+      <a href="https://youtube.com/@incraftnetwork" target="_blank">YouTube</a>
     </p>
     <p>&copy; 2025 INCRAFT NETWORK. Todos los derechos reservados.</p>
   </footer>
 
   <script>
-    function copyIP() {
-      navigator.clipboard.writeText("incraft.ddns.net");
-      alert("¡IP copiada al portapapeles!");
-    }
+    // Animación de intro: oculta el bloque después de la animación
+    window.addEventListener("DOMContentLoaded", () => {
+      const intro = document.getElementById("intro-block");
+      setTimeout(() => {
+        intro.style.display = "none";
+      }, 700); // 0.2s delay + 0.5s animación
+    });
 
-    const maintenance = localStorage.getItem("maintenance") === "true";
-    if (maintenance) {
-      document.getElementById("maintenance-message").classList.remove("hidden");
-      document.getElementById("server-status").style.display = "none";
+    // Mostrar mantenimiento si está activado
+    if (localStorage.getItem("maintenance") === "true") {
+      document.getElementById("main-content").style.display = "none";
+      document.getElementById("maintenance-message").style.display = "block";
     } else {
       fetch("https://api.mcsrvstat.us/2/incraft.ddns.net")
-        .then(res => res.json())
+        .then(response => response.json())
         .then(data => {
-          document.getElementById("status").textContent = data.online ? "Online" : "Offline";
-          document.getElementById("players").textContent = data.players ? `${data.players.online}/${data.players.max}` : "0/?";
+          if (data.online) {
+            document.getElementById("status").textContent = "🟢 En línea";
+            document.getElementById("players").textContent = `Jugadores conectados: ${data.players.online}/${data.players.max}`;
+          } else {
+            document.getElementById("status").textContent = "🔴 Fuera de línea";
+            document.getElementById("players").textContent = "";
+          }
         })
         .catch(() => {
-          document.getElementById("status").textContent = "Error";
+          document.getElementById("status").textContent = "Error al obtener el estado.";
         });
+    }
+
+    function copyIP() {
+      navigator.clipboard.writeText("incraft.ddns.net").then(() => {
+        alert("¡IP copiada al portapapeles!");
+      });
     }
   </script>
 </body>
