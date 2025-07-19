@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>INCRAFT NETWORK</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <img src="incraft-network-logo.png" alt="INCRAFT Logo" class="logo" />
+    <h1>¡Únete a la aventura en <span>INCRAFT NETWORK</span>!</h1>
+  </header>
+
+  <main>
+    <div id="maintenance-message" class="hidden">
+      🛠️ Servidor en mantenimiento. Vuelve pronto.
+    </div>
+
+    <section id="server-status">
+      <h2>Estado del Servidor</h2>
+      <p><strong>IP:</strong> <span id="server-ip">play.incraft.network</span> <button onclick="copyIP()">Copiar IP</button></p>
+      <p><strong>Estado:</strong> <span id="status">Cargando...</span></p>
+      <p><strong>Jugadores:</strong> <span id="players">-</span></p>
+    </section>
+  </main>
+
+  <footer>
+    <p>Síguenos a les xarxes: 
+      <a href="#">Twitter</a> | 
+      <a href="#">Discord</a> | 
+      <a href="#">YouTube</a>
+    </p>
+    <p>&copy; 2025 INCRAFT NETWORK. Tots els drets reservats.</p>
+  </footer>
+
+  <script>
+    function copyIP() {
+      navigator.clipboard.writeText("play.incraft.network");
+      alert("IP copiada al porta-retalls!");
+    }
+
+    const maintenance = localStorage.getItem("maintenance") === "true";
+    if (maintenance) {
+      document.getElementById("maintenance-message").classList.remove("hidden");
+      document.getElementById("server-status").style.display = "none";
+    } else {
+      fetch("https://api.mcsrvstat.us/2/play.incraft.network")
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById("status").textContent = data.online ? "Online" : "Offline";
+          document.getElementById("players").textContent = data.players ? `${data.players.online}/${data.players.max}` : "0/?";
+        })
+        .catch(() => {
+          document.getElementById("status").textContent = "Error";
+        });
+    }
+  </script>
+</body>
+</html>

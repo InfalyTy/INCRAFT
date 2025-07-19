@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin - INCRAFT NETWORK</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>Panell d'administració</h1>
+  </header>
+  <main>
+    <label>
+      <input type="checkbox" id="maintenance-toggle" /> Activar mode manteniment
+    </label>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 INCRAFT NETWORK</p>
+  </footer>
+
+  <script>
+    const toggle = document.getElementById("maintenance-toggle");
+    toggle.checked = localStorage.getItem("maintenance") === "true";
+
+    toggle.addEventListener("change", () => {
+      localStorage.setItem("maintenance", toggle.checked);
+      alert("Estat de manteniment actualitzat!");
+    });
+  </script>
+</body>
+</html>
