@@ -94,16 +94,6 @@
       }
     }
 
-    #maintenance-message {
-      background-color: #ff4444;
-      color: white;
-      padding: 30px;
-      border-radius: 12px;
-      font-size: 1.4rem;
-      margin: 30px auto;
-      max-width: 600px;
-    }
-
     /* Intro bloque de tierra Minecraft */
     #intro-block {
       position: fixed;
@@ -121,7 +111,7 @@
     #intro-block img {
       width: 100vw;
       height: 100vh;
-      object-fit: contain; /* Cambiado para que no recorte la imagen */
+      object-fit: contain;
       max-width: 100vw;
       max-height: 100vh;
     }
@@ -130,6 +120,39 @@
       to {
         transform: scale(0);
         visibility: hidden;
+      }
+    }
+
+    /* Fondo animado barras amarillas y negras para mantenimiento */
+    #maintenance-message {
+      position: relative;
+      background: repeating-linear-gradient(
+        45deg,
+        #ffeb3b 0,
+        #ffeb3b 20px,
+        #000000 20px,
+        #000000 40px
+      );
+      background-size: 80px 80px;
+      animation: moveStripes 3s linear infinite;
+      color: white;
+      padding: 30px;
+      border-radius: 12px;
+      font-size: 1.6rem;
+      margin: 30px auto;
+      max-width: 600px;
+      font-weight: bold;
+      box-shadow: 0 0 15px 3px rgba(255, 235, 59, 0.7);
+      text-shadow: 0 0 5px black;
+      display: none; /* Oculto por defecto */
+    }
+
+    @keyframes moveStripes {
+      0% {
+        background-position: 0 0;
+      }
+      100% {
+        background-position: 80px 0;
       }
     }
   </style>
@@ -144,7 +167,7 @@
     <h1>¡Únete a la aventura en INCRAFT NETWORK!</h1>
   </header>
 
-  <div id="maintenance-message" style="display: none;">
+  <div id="maintenance-message">
     🛠️ Servidor en mantenimiento. Vuelve pronto.
   </div>
 
