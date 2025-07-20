@@ -2,209 +2,185 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Admin - INCRAFT NETWORK</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Panel de Administración | INCRAFT NETWORK</title>
   <style>
     body {
       margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #1d1d1d;
-      color: #fff;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0f0f0f;
+      color: white;
       display: flex;
       flex-direction: column;
-      min-height: 100vh;
       align-items: center;
-      padding: 2rem 1rem;
-      text-align: center;
+      padding: 2rem;
     }
-    header {
-      margin-bottom: 2rem;
-    }
+
     h1 {
       font-size: 2rem;
-      font-weight: 700;
-      color: #55ff55;
-      letter-spacing: 1.5px;
-      margin: 0;
-    }
-    .admin-box {
-      background: #2a2a2a;
-      padding: 2rem 2.5rem;
-      border-radius: 16px;
-      box-shadow: 0 0 20px #0009;
-      max-width: 400px;
-      width: 100%;
-      margin-bottom: 2rem;
-    }
-    #login-section input[type="password"] {
-      width: 100%;
-      padding: 0.7rem 1rem;
-      font-size: 1.1rem;
-      border-radius: 8px;
-      border: none;
-      margin-bottom: 1.2rem;
-      outline: none;
-    }
-    button {
-      padding: 0.7rem 1.5rem;
-      font-size: 1.1rem;
-      background-color: #55ff55;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      font-weight: 700;
-      color: #000;
-      transition: background-color 0.3s ease;
-    }
-    button:hover {
-      background-color: #44dd44;
+      margin-bottom: 1rem;
     }
 
-    /* Container para toggles */
-    .toggle-container {
-      margin-top: 1.5rem;
-      padding: 1.2rem 1.5rem;
-      background: #222;
-      border: 2px solid #55ff55;
-      border-radius: 12px;
-      box-shadow: 0 0 12px #55ff55aa;
-      max-width: 320px;
-      margin-left: auto;
-      margin-right: auto;
-      user-select: none;
-      font-weight: 700;
-      font-size: 1.2rem;
-      color: #55ff55;
+    .hidden {
+      display: none;
+    }
+
+    .login-container {
       display: flex;
       flex-direction: column;
-      gap: 1.5rem;
+      align-items: center;
+      margin-top: 4rem;
     }
 
-    /* Toggle personalizado */
-    .toggle-switch {
-      position: relative;
-      display: inline-block;
-      width: 50px;
-      height: 28px;
-      margin-left: 0.75rem;
-      cursor: pointer;
+    .login-container input {
+      padding: 10px;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: none;
+      margin-bottom: 10px;
+      width: 250px;
     }
-    /* Input oculto */
-    .toggle-switch input {
+
+    .login-container button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      background-color: #4CAF50;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      color: white;
+    }
+
+    .panel {
+      max-width: 400px;
+      width: 100%;
+      margin-top: 2rem;
+      background-color: #1a1a1a;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.4s ease;
+    }
+
+    .panel.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .toggle-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 1rem 0;
+    }
+
+    .toggle-label {
+      font-size: 1rem;
+    }
+
+    .toggle {
+      position: relative;
+      width: 50px;
+      height: 26px;
+    }
+
+    .toggle input {
       opacity: 0;
       width: 0;
       height: 0;
-      position: absolute;
-    }
-    /* El fondo */
-    .slider {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: #555;
-      border-radius: 34px;
-      transition: background-color 0.4s ease;
-    }
-    /* El circulo */
-    .slider::before {
-      content: "";
-      position: absolute;
-      height: 22px;
-      width: 22px;
-      left: 3px;
-      bottom: 3px;
-      background-color: #222;
-      border-radius: 50%;
-      transition: transform 0.4s ease, background-color 0.4s ease;
-      box-shadow: 0 0 4px #000 inset;
     }
 
-    /* Cuando está checked */
-    input:checked + .slider {
-      background-color: #55ff55;
-      box-shadow: 0 0 8px #55ff55;
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0;
+      right: 0; bottom: 0;
+      background-color: #888;
+      transition: 0.4s;
+      border-radius: 34px;
     }
-    input:checked + .slider::before {
-      transform: translateX(22px);
-      background-color: #000;
-      box-shadow: 0 0 10px #55ff55;
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: 0.4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: #4CAF50;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(24px);
     }
   </style>
 </head>
 <body>
+  <h1>Panel de Administración</h1>
 
-  <header>
-    <h1>Panel de Administración</h1>
-  </header>
+  <div class="login-container" id="login-container">
+    <input type="password" id="password" placeholder="Introduce la contraseña" />
+    <button onclick="checkPassword()">Acceder</button>
+  </div>
 
-  <main>
-    <div id="login-section" class="admin-box">
-      <input type="password" id="admin-pass" placeholder="Contraseña de acceso" autocomplete="off" />
-      <button onclick="checkPassword()">Entrar</button>
+  <div class="panel" id="admin-panel">
+    <div class="toggle-container">
+      <span class="toggle-label">Modo mantenimiento</span>
+      <label class="toggle">
+        <input type="checkbox" id="maintenance-toggle">
+        <span class="slider"></span>
+      </label>
     </div>
 
-    <div id="admin-panel" class="admin-box hidden">
-      <div class="toggle-container">
-        <label for="maintenance-toggle">
-          Modo mantenimiento
-          <span class="toggle-switch">
-            <input type="checkbox" id="maintenance-toggle" />
-            <span class="slider"></span>
-          </span>
-        </label>
-
-        <label for="postulacion-toggle">
-          Mostrar botón postulación
-          <span class="toggle-switch">
-            <input type="checkbox" id="postulacion-toggle" />
-            <span class="slider"></span>
-          </span>
-        </label>
-      </div>
+    <div class="toggle-container">
+      <span class="toggle-label">Botón de postulación</span>
+      <label class="toggle">
+        <input type="checkbox" id="postulacion-toggle">
+        <span class="slider"></span>
+      </label>
     </div>
-  </main>
+  </div>
 
-  <footer>
-    <p>&copy; 2025 INCRAFT NETWORK</p>
-  </footer>
-
-<script>
-  const PASSWORD = "incraft123";
-
-  function checkPassword() {
-    const input = document.getElementById("admin-pass").value;
-    if (input === PASSWORD) {
-      document.getElementById("login-section").style.display = "none";
-      document.getElementById("admin-panel").classList.remove("hidden");
-      initToggles();
-    } else {
-      alert("Contraseña incorrecta");
-    }
-  }
-
-  function initToggles() {
+  <script>
+    const passwordCorrecta = "admin123"; // <- CAMBIA LA CONTRASEÑA AQUÍ
+    const loginContainer = document.getElementById("login-container");
+    const panel = document.getElementById("admin-panel");
     const maintenanceToggle = document.getElementById("maintenance-toggle");
     const postulacionToggle = document.getElementById("postulacion-toggle");
 
-    // Cargar estado de mantenimiento
-    maintenanceToggle.checked = localStorage.getItem("maintenance") === "true";
-    // Cargar estado de mostrar botón postulación (por defecto true si no hay valor)
-    const showPostulacion = localStorage.getItem("showPostulacion");
-    postulacionToggle.checked = showPostulacion === null ? true : showPostulacion === "true";
+    // Mostrar o ocultar el panel si la contraseña es correcta
+    function checkPassword() {
+      const input = document.getElementById("password").value;
+      if (input === passwordCorrecta) {
+        loginContainer.classList.add("hidden");
+        panel.classList.add("visible");
+      } else {
+        alert("Contraseña incorrecta");
+      }
+    }
 
+    // Guardar valores en localStorage
     maintenanceToggle.addEventListener("change", () => {
-      localStorage.setItem("maintenance", maintenanceToggle.checked);
-      alert("¡Estado de mantenimiento actualizado!");
+      localStorage.setItem("maintenanceMode", maintenanceToggle.checked ? "on" : "off");
     });
 
     postulacionToggle.addEventListener("change", () => {
-      localStorage.setItem("showPostulacion", postulacionToggle.checked);
-      alert("¡Estado del botón de postulación actualizado!");
+      localStorage.setItem("postulacionVisible", postulacionToggle.checked ? "on" : "off");
     });
-  }
-</script>
 
+    // Cargar estado al abrir
+    window.addEventListener("DOMContentLoaded", () => {
+      maintenanceToggle.checked = localStorage.getItem("maintenanceMode") === "on";
+      postulacionToggle.checked = localStorage.getItem("postulacionVisible") === "on";
+    });
+  </script>
 </body>
 </html>
