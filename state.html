@@ -5,25 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Estado del servidor</title>
   <style>
-    body {
-      background: #111;
-      color: white;
-      font-family: Arial, sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
+    html, body {
       margin: 0;
+      padding: 0;
+      background: transparent;
+      font-family: Arial, sans-serif;
     }
 
     .status-container {
-      background: #1c1c1c;
       border: 4px solid orange;
       border-radius: 16px;
-      padding: 30px;
+      padding: 20px;
       text-align: center;
-      width: 300px;
-      box-shadow: 0 0 10px rgba(255, 165, 0, 0.5);
+      width: 280px;
+      background: transparent;
       transition: border-color 0.3s ease;
     }
 
@@ -34,13 +29,13 @@
     .status-container.online {
       border-color: #3bff72;
       animation: pulseGreen 1.2s infinite alternate;
-      box-shadow: 0 0 15px rgba(59, 255, 114, 0.6);
+      box-shadow: 0 0 15px rgba(59, 255, 114, 0.5);
     }
 
     .status-container.offline {
       border-color: #ff3b3b;
       animation: pulseRed 1.2s infinite alternate;
-      box-shadow: 0 0 15px rgba(255, 59, 59, 0.6);
+      box-shadow: 0 0 15px rgba(255, 59, 59, 0.5);
     }
 
     @keyframes pulseOrange {
@@ -59,21 +54,22 @@
     }
 
     .logo-server {
-      width: 96px;
-      height: 96px;
+      width: 80px;
+      height: 80px;
       border-radius: 12px;
-      margin-bottom: 15px;
-    }
-
-    .server-name {
-      font-size: 1.4rem;
-      font-weight: bold;
       margin-bottom: 10px;
     }
 
+    .server-name {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: white;
+    }
+
     .status {
-      margin-top: 10px;
       font-size: 1.1rem;
+      margin-top: 5px;
     }
 
     .online {
@@ -85,9 +81,9 @@
     }
 
     .players {
-      margin-top: 5px;
       font-size: 0.95rem;
-      color: #aaa;
+      color: #ddd;
+      margin-top: 5px;
     }
   </style>
 </head>
@@ -117,23 +113,16 @@
           contenedor.className = "status-container online";
           estadoElem.textContent = "Servidor en línea";
           estadoElem.className = "status online";
-
-          if (datos.players && datos.players.online !== undefined) {
-            jugadoresElem.textContent = `Jugadores: ${datos.players.online} / ${datos.players.max}`;
-          } else {
-            jugadoresElem.textContent = "";
-          }
+          jugadoresElem.textContent = `Jugadores: ${datos.players.online} / ${datos.players.max}`;
         } else {
           contenedor.className = "status-container offline";
           estadoElem.textContent = "Servidor apagado";
           estadoElem.className = "status offline";
-          jugadoresElem.textContent = "";
         }
       } catch (error) {
         contenedor.className = "status-container offline";
         estadoElem.textContent = "Error al obtener el estado";
         estadoElem.className = "status offline";
-        jugadoresElem.textContent = "";
       }
     }
 
