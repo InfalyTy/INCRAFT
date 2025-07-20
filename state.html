@@ -1,81 +1,104 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Estado del Servidor</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Estado del servidor</title>
   <style>
     body {
-      margin: 0;
-      font-family: sans-serif;
-      background-color: #1e1e1e;
-      color: #fff;
+      background: #111;
+      color: white;
+      font-family: Arial, sans-serif;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
       height: 100vh;
+      margin: 0;
     }
-    #estado-container {
-      background-color: #2a2a2a;
-      padding: 20px 30px;
-      border-radius: 12px;
-      box-shadow: 0 0 12px rgba(0,0,0,0.4);
+
+    .status-container {
+      background: #1c1c1c;
+      border: 2px solid #3bff72;
+      border-radius: 16px;
+      padding: 30px;
       text-align: center;
+      width: 300px;
+      box-shadow: 0 0 10px rgba(0, 255, 100, 0.4);
     }
-    #server-favicon {
-      width: 64px;
-      height: 64px;
+
+    .logo-server {
+      width: 96px;
+      height: 96px;
+      border-radius: 12px;
+      margin-bottom: 15px;
+    }
+
+    .server-name {
+      font-size: 1.4rem;
+      font-weight: bold;
       margin-bottom: 10px;
     }
-    .online { color: #4CAF50; }
-    .offline { color: #F44336; }
-    #players { margin-top: 10px; font-size: 1.1em; }
+
+    .status {
+      margin-top: 10px;
+      font-size: 1.1rem;
+    }
+
+    .online {
+      color: #3bff72;
+    }
+
+    .offline {
+      color: #ff3b3b;
+    }
+
+    .players {
+      margin-top: 5px;
+      font-size: 0.95rem;
+      color: #aaa;
+    }
   </style>
 </head>
 <body>
+  <div class="status-container">
+    <img src="server-icon.png" alt="Logo del servidor" class="logo-server" />
+    <div class="server-name">INCRAFT NETWORK</div>
+    <div class="status" id="estado">Cargando estado...</div>
+    <div class="players" id="jugadores"></div>
+  </div>
 
-<div id="estado-container">
-  <img id="server-favicon" src="" alt="Favicon del servidor" hidden />
-  <h2>Estado del servidor: <span id="estado" class="offline">Desconocido</span></h2>
-  <div id="players"></div>
-</div>
+  <script>
+    const mostrarEstado = async () => {
+      try {
+        const respuesta = await fetch("https://api.mcsrvstat.us/3/emerald.magmanode.com:29013");
+        const datos = await respuesta.json();
 
-<script>
-  const API_URL = "https://api.mcsrvstat.us/3/emerald.magmanode.com:29013";
-  const estadoEl = document.getElementById("estado");
-  const playersEl = document.getElementById("players");
-  const faviconEl = document.getElementById("server-favicon");
+        const estadoElem = document.getElementById("estado");
+        const jugadoresElem = document.getElementById("jugadores");
 
-  async function actualizarEstado() {
-    try {
-      const res = await fetch(API_URL);
-      const data = await res.json();
+        if (datos.online) {
+          estadoElem.textContent = "Servidor en línea";
+          estadoElem.className = "status online";
 
-      if (data.online) {
-        estadoEl.textContent = "Online";
-        estadoEl.className = "online";
-        playersEl.textContent = `Jugadores: ${data.players.online}/${data.players.max}`;
-        if (data.icon) {
-          faviconEl.src = `data:image/png;base64,${data.icon}`;
-          faviconEl.hidden = false;
+          if (datos.players && datos.players.online !== undefined) {
+            jugadoresElem.textContent = `Jugadores: ${datos.players.online} / ${datos.players.max}`;
+          } else {
+            jugadoresElem.textContent = "";
+          }
+        } else {
+          estadoElem.textContent = "Servidor apagado";
+          estadoElem.className = "status offline";
+          jugadoresElem.textContent = "";
         }
-      } else {
-        estadoEl.textContent = "Offline";
-        estadoEl.className = "offline";
-        playersEl.textContent = "";
-        faviconEl.hidden = true;
+      } catch (error) {
+        document.getElementById("estado").textContent = "Error al obtener el estado";
+        document.getElementById("estado").className = "status offline";
+        document.getElementById("jugadores").textContent = "";
       }
-    } catch (e) {
-      estadoEl.textContent = "Error";
-      estadoEl.className = "offline";
-      playersEl.textContent = "";
-      faviconEl.hidden = true;
-    }
-  }
+    };
 
-  actualizarEstado();
-  setInterval(actualizarEstado, 10000); // Actualiza cada 10s
-</script>
-
+    mostrarEstado();
+    setInterval(mostrarEstado, 10000);
+  </script>
 </body>
 </html>
