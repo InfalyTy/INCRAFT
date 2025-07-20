@@ -17,13 +17,15 @@
 
     .status-container {
       padding: 20px 30px;
-      border-radius: 16px;
-      border: 5px solid gray;
-      text-align: center;
+      border-radius: 20px;
+      border: 5px solid;
       background-color: #000;
       color: #fff;
-      transition: border 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+      text-align: center;
       backdrop-filter: blur(10px);
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.1);
+      transition: border 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+      overflow: hidden; /* important per respectar el border-radius amb el gradient */
     }
 
     .status-container.online {
@@ -56,7 +58,7 @@
       width: 64px;
       height: 64px;
       margin-bottom: 10px;
-      border-radius: 12px;
+      border-radius: 20px;
     }
 
     @keyframes greenPulse {
