@@ -2,241 +2,204 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>INCRAFT NETWORK</title>
   <style>
-    /* Estilos básicos (puedes añadir tu CSS completo aquí) */
-    body {
+    * {
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: #1d1d1d;
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-      text-align: center;
-    }
-    header {
-      padding: 2rem 1rem;
-      background-color: #2c2c2c;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.5);
-    }
-    .logo {
-      max-width: 180px;
-      margin-bottom: 1rem;
-    }
-    h1 {
-      font-size: 2rem;
-      margin: 0;
-      color: #55ff55;
-    }
-    main {
-      flex: 1;
-      max-width: 800px;
-      margin: 2rem auto;
-      padding: 0 1rem;
-    }
-    #server-status, #maintenance-message {
-      background: #2a2a2a;
-      padding: 1.5rem;
-      border-radius: 12px;
-      box-shadow: 0 0 10px #0005;
-      margin-top: 1rem;
-      font-size: 1.1rem;
-      line-height: 1.4;
-      user-select: none;
-    }
-    #maintenance-message {
-      color: #f55;
-      font-weight: 700;
-    }
-    button, .postulacion-btn {
-      margin-left: 1rem;
-      background: #55ff55;
-      border: none;
-      color: #000;
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 700;
-      text-decoration: none;
-      display: inline-block;
-      transition: background 0.2s ease;
-    }
-    button:hover, .postulacion-btn:hover {
-      background: #44dd44;
-    }
-    footer {
-      background: #111;
-      padding: 1rem;
-      font-size: 0.9rem;
-      color: #55ff55;
-      user-select: none;
-    }
-    footer a {
-      color: #55ff55;
-      text-decoration: none;
-      margin: 0 0.5rem;
-    }
-    footer a:hover {
-      text-decoration: underline;
+      padding: 0;
+      box-sizing: border-box;
     }
 
-    /* Animación cubo / logo (opcional si usas tu propio estilo) */
-    #intro-block {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      width: 250px;
-      height: 250px;
-      background: url('incraft-network-logo.png') no-repeat center center/contain;
-      transform: translate(-50%, -50%) scale(1);
-      z-index: 9999;
-      transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
-      pointer-events: none;
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #1e1e1e;
+      color: white;
+      overflow-x: hidden;
     }
-    #intro-block.hidden {
-      transform: translate(-50%, -50%) scale(0);
+
+    header {
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    header img {
+      width: 200px;
+      animation: logoFade 0.5s ease-out forwards;
+    }
+
+    @keyframes logoFade {
+      0% { transform: scale(10); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .slogan {
+      text-align: center;
+      font-size: 2rem;
+      margin-top: 10px;
+    }
+
+    .status-container {
+      margin: 30px auto;
+      padding: 20px;
+      max-width: 500px;
+      background: #2c2c2c;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 0 20px #00000066;
+    }
+
+    .status-container h2 {
+      margin-bottom: 15px;
+    }
+
+    .copy-btn, .apply-btn {
+      padding: 10px 20px;
+      background-color: #00c853;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 15px;
+      transition: background 0.3s;
+    }
+
+    .copy-btn:hover, .apply-btn:hover {
+      background-color: #00b349;
+    }
+
+    footer {
+      margin-top: 40px;
+      text-align: center;
+      padding: 20px;
+      background-color: #121212;
+      font-size: 0.9rem;
+    }
+
+    footer a {
+      color: #66ccff;
+      margin: 0 10px;
+      text-decoration: none;
+    }
+
+    .popup {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #323232;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
       opacity: 0;
-      transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.8s ease;
+      transition: opacity 0.3s ease-in-out;
+      z-index: 1000;
+    }
+
+    .popup.show {
+      opacity: 1;
+    }
+
+    .maintenance-banner {
+      padding: 40px;
+      background: repeating-linear-gradient(
+        45deg,
+        #ffcc00,
+        #ffcc00 20px,
+        #000000 20px,
+        #000000 40px
+      );
+      background-size: 200% 200%;
+      animation: stripesMove 2s linear infinite;
+      color: black;
+      text-align: center;
+      font-size: 2rem;
+      font-weight: bold;
+    }
+
+    @keyframes stripesMove {
+      from { background-position: 0 0; }
+      to { background-position: 100px 100px; }
+    }
+
+    @media (max-width: 600px) {
+      .slogan {
+        font-size: 1.5rem;
+      }
+
+      .status-container {
+        margin: 20px;
+      }
     }
   </style>
 </head>
 <body>
-
-  <div id="intro-block"></div>
-
   <header>
-    <img src="incraft-network-logo.png" alt="Logo INCRAFT NETWORK" class="logo" />
-    <h1>¡Únete a la aventura en INCRAFT NETWORK!</h1>
+    <img src="incraft-network-logo.png" alt="Logo INCRAFT NETWORK" />
+    <h1 class="slogan">¡Únete a la aventura en INCRAFT NETWORK!</h1>
   </header>
 
-  <main>
-    <div id="maintenance-message" class="hidden"></div>
+  <div id="maintenance" class="maintenance-banner" style="display: none;">
+    🛠️ Servidor apagado o en mantenimiento. Vuelve pronto.
+  </div>
 
-    <section id="server-status">
-      <h2>Estado del Servidor</h2>
-      <p><strong>IP:</strong> <span id="server-ip">incraft.ddns.net</span><button onclick="copyIP()">Copiar IP</button></p>
-      <p><strong>Estado:</strong> <span id="status">Cargando...</span></p>
-      <p><strong>Jugadores:</strong> <span id="players">-</span></p>
-      <a href="https://bit.ly/pos-incraft" class="postulacion-btn" id="postulacion-btn">📨 Postulación</a>
-    </section>
-  </main>
+  <div id="serverStatus" class="status-container" style="display: none;">
+    <h2>Estado del servidor</h2>
+    <p><strong>IP:</strong> play.incraft.network</p>
+    <p id="status">Cargando estado...</p>
+    <button class="copy-btn" onclick="copiarIP()">Copiar IP</button>
+    <div id="applyBtn" style="margin-top: 10px; display: none;">
+      <a href="https://bit.ly/pos-incraft" target="_blank">
+        <button class="apply-btn">Postulación</button>
+      </a>
+    </div>
+  </div>
 
   <footer>
-    <p>Síguenos en las redes: 
-      <a href="https://discord.gg/APrYRZUqBT" target="_blank" rel="noopener noreferrer">Discord</a> | 
-      <a href="https://youtube.com/@incraftnetwork" target="_blank" rel="noopener noreferrer">YouTube</a>
-    </p>
-    <p>&copy; 2025 INCRAFT NETWORK. Todos los derechos reservados.</p>
+    &copy; 2025 INCRAFT NETWORK · 
+    <a href="https://youtube.com/@incraftnetwork" target="_blank">YouTube</a> · 
+    <a href="https://discord.gg/APrYRZUqBT" target="_blank">Discord</a>
   </footer>
 
+  <div id="popup" class="popup">¡IP copiada al portapapeles!</div>
+
   <script>
-    const serverIP = "incraft.ddns.net";
-    const apiURL = "https://api.mcsrvstat.us/3/emerald.magmanode.com:29013";
+    const maintenanceLocal = localStorage.getItem("modoMantenimiento") === "true";
+    const mostrarPostulacion = localStorage.getItem("mostrarPostulacion") === "true";
+    const maintenanceBanner = document.getElementById("maintenance");
+    const serverStatus = document.getElementById("serverStatus");
+    const statusText = document.getElementById("status");
+    const popup = document.getElementById("popup");
 
-    // Animación logo bloque
-    window.addEventListener("load", () => {
-      const intro = document.getElementById("intro-block");
-      setTimeout(() => {
-        intro.classList.add("hidden");
-        setTimeout(() => {
-          intro.style.display = "none";
-        }, 1200);
-      }, 1500);
-    });
+    const applyBtn = document.getElementById("applyBtn");
+    if (mostrarPostulacion) applyBtn.style.display = "block";
 
-    // Copiar IP con popup bonito
-    function copyIP() {
-      navigator.clipboard.writeText(serverIP).then(() => {
-        showPopup("¡IP copiada al portapapeles!");
-      }).catch(() => {
-        showPopup("Error al copiar la IP.");
+    function copiarIP() {
+      navigator.clipboard.writeText("play.incraft.network").then(() => {
+        popup.classList.add("show");
+        setTimeout(() => popup.classList.remove("show"), 2500);
       });
     }
 
-    // Popup personalizado
-    function showPopup(msg) {
-      const popup = document.createElement("div");
-      popup.textContent = msg;
-      popup.style.position = "fixed";
-      popup.style.bottom = "30px";
-      popup.style.left = "50%";
-      popup.style.transform = "translateX(-50%)";
-      popup.style.background = "#55ff55";
-      popup.style.color = "#000";
-      popup.style.padding = "0.8rem 1.5rem";
-      popup.style.borderRadius = "8px";
-      popup.style.fontWeight = "700";
-      popup.style.boxShadow = "0 0 10px #44dd44aa";
-      popup.style.zIndex = "10000";
-      popup.style.opacity = "0";
-      popup.style.transition = "opacity 0.3s ease";
-      document.body.appendChild(popup);
-      requestAnimationFrame(() => {
-        popup.style.opacity = "1";
-      });
-      setTimeout(() => {
-        popup.style.opacity = "0";
-        setTimeout(() => {
-          popup.remove();
-        }, 400);
-      }, 2000);
-    }
-
-    // Mostrar/ocultar botón postulación según localStorage
-    function updatePostulacionVisibility() {
-      const showPostulacion = localStorage.getItem("showPostulacion");
-      const btn = document.getElementById("postulacion-btn");
-      if (showPostulacion === "false") {
-        btn.style.display = "none";
-      } else {
-        btn.style.display = "inline-block";
-      }
-    }
-
-    // Actualizar estado servidor y mantenimiento
-    async function updateServerStatus() {
-      const maintenance = localStorage.getItem("maintenance") === "true";
-      const maintenanceMsg = document.getElementById("maintenance-message");
-      const serverStatus = document.getElementById("server-status");
-
-      if (maintenance) {
-        maintenanceMsg.textContent = "🛠️ Servidor en mantenimiento. Vuelve pronto.";
-        maintenanceMsg.classList.remove("hidden");
-        serverStatus.style.display = "none";
-        return;
-      }
-
+    async function comprobarServidor() {
       try {
-        const response = await fetch(apiURL);
-        const data = await response.json();
+        const res = await fetch("https://api.mcsrvstat.us/3/emerald.magmanode.com:29013");
+        const data = await res.json();
 
-        if (!data.online) {
-          maintenanceMsg.textContent = "❌ Servidor apagado.";
-          maintenanceMsg.classList.remove("hidden");
+        const online = data.online;
+        if (!online || maintenanceLocal) {
+          maintenanceBanner.style.display = "block";
           serverStatus.style.display = "none";
-          return;
+        } else {
+          serverStatus.style.display = "block";
+          statusText.innerText = `🟢 Online — ${data.players.online}/${data.players.max}`;
         }
-
-        // Servidor online y no en mantenimiento
-        maintenanceMsg.classList.add("hidden");
-        serverStatus.style.display = "block";
-
-        document.getElementById("status").textContent = "Online";
-        document.getElementById("players").textContent = `${data.players.online}/${data.players.max}`;
-      } catch {
-        maintenanceMsg.textContent = "⚠️ Error al obtener estado del servidor.";
-        maintenanceMsg.classList.remove("hidden");
+      } catch (err) {
+        maintenanceBanner.style.display = "block";
         serverStatus.style.display = "none";
       }
     }
 
-    updatePostulacionVisibility();
-    updateServerStatus();
-    // Actualizar estado cada 30 segundos
-    setInterval(updateServerStatus, 30000);
+    comprobarServidor();
   </script>
-
 </body>
 </html>
