@@ -20,25 +20,37 @@
     }
     .online { color: #00ff00; }
     .offline { color: #ff3333; }
+    .loading { color: #cccccc; font-style: italic; }
   </style>
 </head>
 <body>
-  <div id="status">Consultando estado de <strong>incraft.ddns.net</strong>...</div>
+  <div id="status" class="loading">Consultando estado de <strong>incraft.ddns.net</strong>...</div>
 
   <script>
-    fetch("https://api.mcsrvstat.us/3/emerald.magmanode.com:29013")
-      .then(res => res.json())
-      .then(data => {
-        const statusEl = document.getElementById("status");
-        if (data.online) {
-          statusEl.innerHTML = "🟢 <strong>incraft.ddns.net</strong> está <span class='online'>EN LÍNEA</span>";
-        } else {
-          statusEl.innerHTML = "🔴 <strong>incraft.ddns.net</strong> está <span class='offline'>APAGADO</span>";
-        }
-      })
-      .catch(() => {
-        document.getElementById("status").innerHTML = "⚠️ Error al obtener el estado";
-      });
+    function actualizarEstado() {
+      const statusEl = document.getElementById("status");
+      statusEl.innerHTML = "Consultando estado de <strong>incraft.ddns.net</strong>...";
+      statusEl.className = "loading";
+
+      fetch("https://api.mcsrvstat.us/3/emerald.magmanode.com:29013")
+        .then(res => res.json())
+        .then(data => {
+          if (data.online) {
+            statusEl.innerHTML = "🟢 <strong>incraft.ddns.net</strong> está <span class='online'>EN LÍNEA</span>";
+            statusEl.className = "online";
+          } else {
+            statusEl.innerHTML = "🔴 <strong>incraft.ddns.net</strong> está <span class='offline'>APAGADO</span>";
+            statusEl.className = "offline";
+          }
+        })
+        .catch(() => {
+          statusEl.innerHTML = "⚠️ Error al obtener el estado";
+          statusEl.className = "offline";
+        });
+    }
+
+    actualizarEstado(); // Primera carga
+    setInterval(actualizarEstado, 10000); // Cada 10 segundos
   </script>
 </body>
 </html>
