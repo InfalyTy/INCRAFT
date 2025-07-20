@@ -161,8 +161,11 @@
     function checkPassword() {
       const input = document.getElementById("password").value;
       if (input === passwordCorrecta) {
-        loginContainer.classList.add("hidden");
-        panel.classList.add("visible");
+        loginContainer.style.display = "none";
+        panel.style.display = "block";
+        setTimeout(() => {
+          panel.classList.add("visible");
+        }, 50);
       } else {
         alert("Contraseña incorrecta");
       }
@@ -177,6 +180,7 @@
     });
 
     window.addEventListener("DOMContentLoaded", () => {
+      // Restaurar valors dels toggles
       maintenanceToggle.checked = localStorage.getItem("maintenanceMode") === "on";
       postulacionToggle.checked = localStorage.getItem("postulacionVisible") === "on";
     });
