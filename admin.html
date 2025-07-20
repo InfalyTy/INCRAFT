@@ -22,7 +22,7 @@
     }
 
     .hidden {
-      display: none;
+      display: none !important;
     }
 
     .login-container {
@@ -62,9 +62,11 @@
       opacity: 0;
       transform: translateY(20px);
       transition: all 0.4s ease;
+      display: none;
     }
 
     .panel.visible {
+      display: block;
       opacity: 1;
       transform: translateY(0);
     }
@@ -150,13 +152,12 @@
   </div>
 
   <script>
-    const passwordCorrecta = "admin123"; // <- CAMBIA LA CONTRASEÑA AQUÍ
+    const passwordCorrecta = "admin123";
     const loginContainer = document.getElementById("login-container");
     const panel = document.getElementById("admin-panel");
     const maintenanceToggle = document.getElementById("maintenance-toggle");
     const postulacionToggle = document.getElementById("postulacion-toggle");
 
-    // Mostrar o ocultar el panel si la contraseña es correcta
     function checkPassword() {
       const input = document.getElementById("password").value;
       if (input === passwordCorrecta) {
@@ -167,7 +168,6 @@
       }
     }
 
-    // Guardar valores en localStorage
     maintenanceToggle.addEventListener("change", () => {
       localStorage.setItem("maintenanceMode", maintenanceToggle.checked ? "on" : "off");
     });
@@ -176,7 +176,6 @@
       localStorage.setItem("postulacionVisible", postulacionToggle.checked ? "on" : "off");
     });
 
-    // Cargar estado al abrir
     window.addEventListener("DOMContentLoaded", () => {
       maintenanceToggle.checked = localStorage.getItem("maintenanceMode") === "on";
       postulacionToggle.checked = localStorage.getItem("postulacionVisible") === "on";
