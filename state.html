@@ -18,12 +18,44 @@
 
     .status-container {
       background: #1c1c1c;
-      border: 2px solid #3bff72;
+      border: 4px solid orange;
       border-radius: 16px;
       padding: 30px;
       text-align: center;
       width: 300px;
-      box-shadow: 0 0 10px rgba(0, 255, 100, 0.4);
+      box-shadow: 0 0 10px rgba(255, 165, 0, 0.5);
+      transition: border-color 0.3s ease;
+    }
+
+    .status-container.loading {
+      animation: pulseOrange 1.2s infinite alternate;
+    }
+
+    .status-container.online {
+      border-color: #3bff72;
+      animation: pulseGreen 1.2s infinite alternate;
+      box-shadow: 0 0 15px rgba(59, 255, 114, 0.6);
+    }
+
+    .status-container.offline {
+      border-color: #ff3b3b;
+      animation: pulseRed 1.2s infinite alternate;
+      box-shadow: 0 0 15px rgba(255, 59, 59, 0.6);
+    }
+
+    @keyframes pulseOrange {
+      from { border-color: #ffaa33; }
+      to { border-color: #cc6600; }
+    }
+
+    @keyframes pulseGreen {
+      from { border-color: #3bff72; }
+      to { border-color: #2be864; }
+    }
+
+    @keyframes pulseRed {
+      from { border-color: #ff3b3b; }
+      to { border-color: #cc0000; }
     }
 
     .logo-server {
@@ -60,7 +92,7 @@
   </style>
 </head>
 <body>
-  <div class="status-container">
+  <div class="status-container loading" id="contenedor-estado">
     <img src="server-icon.png" alt="Logo del servidor" class="logo-server" />
     <div class="server-name">INCRAFT NETWORK</div>
     <div class="status" id="estado">Cargando estado...</div>
@@ -68,15 +100,21 @@
   </div>
 
   <script>
-    const mostrarEstado = async () => {
+    const contenedor = document.getElementById("contenedor-estado");
+    const estadoElem = document.getElementById("estado");
+    const jugadoresElem = document.getElementById("jugadores");
+
+    async function mostrarEstado() {
+      contenedor.className = "status-container loading";
+      estadoElem.textContent = "Cargando estado...";
+      jugadoresElem.textContent = "";
+
       try {
         const respuesta = await fetch("https://api.mcsrvstat.us/3/emerald.magmanode.com:29013");
         const datos = await respuesta.json();
 
-        const estadoElem = document.getElementById("estado");
-        const jugadoresElem = document.getElementById("jugadores");
-
         if (datos.online) {
+          contenedor.className = "status-container online";
           estadoElem.textContent = "Servidor en línea";
           estadoElem.className = "status online";
 
@@ -86,16 +124,18 @@
             jugadoresElem.textContent = "";
           }
         } else {
+          contenedor.className = "status-container offline";
           estadoElem.textContent = "Servidor apagado";
           estadoElem.className = "status offline";
           jugadoresElem.textContent = "";
         }
       } catch (error) {
-        document.getElementById("estado").textContent = "Error al obtener el estado";
-        document.getElementById("estado").className = "status offline";
-        document.getElementById("jugadores").textContent = "";
+        contenedor.className = "status-container offline";
+        estadoElem.textContent = "Error al obtener el estado";
+        estadoElem.className = "status offline";
+        jugadoresElem.textContent = "";
       }
-    };
+    }
 
     mostrarEstado();
     setInterval(mostrarEstado, 10000);
