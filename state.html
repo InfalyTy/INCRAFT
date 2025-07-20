@@ -8,126 +8,119 @@
     html, body {
       margin: 0;
       padding: 0;
+      height: 100%;
       background: transparent;
       font-family: Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .status-container {
-      border: 4px solid orange;
-      border-radius: 16px;
-      padding: 20px;
+      background-color: white;
+      border-radius: 12px;
+      padding: 20px 30px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
       text-align: center;
-      width: 280px;
-      background: transparent;
-      transition: border-color 0.3s ease;
+      width: 300px;
+      border: 4px solid transparent;
+      animation: pulse-loading 1s infinite;
     }
 
     .status-container.loading {
-      animation: pulseOrange 1.2s infinite alternate;
+      border-color: orange;
+      animation: pulse-loading 1s infinite;
     }
 
     .status-container.online {
-      border-color: #3bff72;
-      animation: pulseGreen 1.2s infinite alternate;
-      box-shadow: 0 0 15px rgba(59, 255, 114, 0.5);
+      border-color: #28a745;
+      animation: pulse-online 2s infinite;
     }
 
     .status-container.offline {
-      border-color: #ff3b3b;
-      animation: pulseRed 1.2s infinite alternate;
-      box-shadow: 0 0 15px rgba(255, 59, 59, 0.5);
+      border-color: #dc3545;
+      animation: pulse-offline 2s infinite;
     }
 
-    @keyframes pulseOrange {
-      from { border-color: #ffaa33; }
-      to { border-color: #cc6600; }
+    @keyframes pulse-loading {
+      0% { border-color: #fbb040; }
+      50% { border-color: #ffa500; }
+      100% { border-color: #fbb040; }
     }
 
-    @keyframes pulseGreen {
-      from { border-color: #3bff72; }
-      to { border-color: #2be864; }
+    @keyframes pulse-online {
+      0% { border-color: #28a745; }
+      50% { border-color: #70e17b; }
+      100% { border-color: #28a745; }
     }
 
-    @keyframes pulseRed {
-      from { border-color: #ff3b3b; }
-      to { border-color: #cc0000; }
+    @keyframes pulse-offline {
+      0% { border-color: #dc3545; }
+      50% { border-color: #ff6b6b; }
+      100% { border-color: #dc3545; }
     }
 
-    .logo-server {
-      width: 80px;
-      height: 80px;
-      border-radius: 12px;
+    .server-icon {
+      width: 64px;
+      height: 64px;
       margin-bottom: 10px;
+      border-radius: 8px;
     }
 
     .server-name {
       font-size: 1.2rem;
       font-weight: bold;
       margin-bottom: 8px;
-      color: white;
     }
 
     .status {
-      font-size: 1.1rem;
-      margin-top: 5px;
-    }
-
-    .online {
-      color: #3bff72;
-    }
-
-    .offline {
-      color: #ff3b3b;
+      font-size: 1rem;
     }
 
     .players {
       font-size: 0.95rem;
-      color: #ddd;
-      margin-top: 5px;
+      color: #555;
     }
   </style>
 </head>
 <body>
-  <div class="status-container loading" id="contenedor-estado">
-    <img src="server-icon.png" alt="Logo del servidor" class="logo-server" />
-    <div class="server-name">INCRAFT NETWORK</div>
-    <div class="status" id="estado">Cargando estado...</div>
-    <div class="players" id="jugadores"></div>
+  <div class="status-container loading" id="status-container">
+    <img src="server-icon.png" alt="Logo del servidor" class="server-icon" />
+    <div class="server-name">incraft.ddns.net</div>
+    <div class="status" id="server-status">Cargando estado...</div>
+    <div class="players" id="player-count"></div>
   </div>
 
   <script>
-    const contenedor = document.getElementById("contenedor-estado");
-    const estadoElem = document.getElementById("estado");
-    const jugadoresElem = document.getElementById("jugadores");
+    async function actualizarEstado() {
+      const container = document.getElementById("status-container");
+      const statusText = document.getElementById("server-status");
+      const playerCount = document.getElementById("player-count");
 
-    async function mostrarEstado() {
-      contenedor.className = "status-container loading";
-      estadoElem.textContent = "Cargando estado...";
-      jugadoresElem.textContent = "";
+      container.className = "status-container loading";
+      statusText.textContent = "Cargando estado...";
+      playerCount.textContent = "";
 
       try {
-        const respuesta = await fetch("https://api.mcsrvstat.us/3/emerald.magmanode.com:29013");
-        const datos = await respuesta.json();
+        const response = await fetch("https://api.mcsrvstat.us/2/emerald.magmanode.com:29013");
+        const data = await response.json();
 
-        if (datos.online) {
-          contenedor.className = "status-container online";
-          estadoElem.textContent = "Servidor en línea";
-          estadoElem.className = "status online";
-          jugadoresElem.textContent = `Jugadores: ${datos.players.online} / ${datos.players.max}`;
+        if (data.online) {
+          container.className = "status-container online";
+          statusText.textContent = "🟢 Servidor online";
+          playerCount.textContent = `Jugadores: ${data.players.online}/${data.players.max}`;
         } else {
-          contenedor.className = "status-container offline";
-          estadoElem.textContent = "Servidor apagado";
-          estadoElem.className = "status offline";
+          container.className = "status-container offline";
+          statusText.textContent = "🔴 Servidor apagado";
         }
       } catch (error) {
-        contenedor.className = "status-container offline";
-        estadoElem.textContent = "Error al obtener el estado";
-        estadoElem.className = "status offline";
+        container.className = "status-container offline";
+        statusText.textContent = "🔴 Error al consultar el estado";
       }
     }
 
-    mostrarEstado();
-    setInterval(mostrarEstado, 10000);
+    actualizarEstado();
+    setInterval(actualizarEstado, 10000);
   </script>
 </body>
 </html>
