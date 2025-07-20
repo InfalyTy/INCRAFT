@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Estado del servidor</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", sans-serif;
+      background: #111;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-size: 2em;
+      text-align: center;
+    }
+    .online { color: #00ff00; }
+    .offline { color: #ff3333; }
+  </style>
+</head>
+<body>
+  <div id="status">Consultando estado de <strong>incraft.ddns.net</strong>...</div>
+
+  <script>
+    fetch("https://api.mcsrvstat.us/3/emerald.magmanode.com:29013")
+      .then(res => res.json())
+      .then(data => {
+        const statusEl = document.getElementById("status");
+        if (data.online) {
+          statusEl.innerHTML = "🟢 <strong>incraft.ddns.net</strong> está <span class='online'>EN LÍNEA</span>";
+        } else {
+          statusEl.innerHTML = "🔴 <strong>incraft.ddns.net</strong> está <span class='offline'>APAGADO</span>";
+        }
+      })
+      .catch(() => {
+        document.getElementById("status").innerHTML = "⚠️ Error al obtener el estado";
+      });
+  </script>
+</body>
+</html>
