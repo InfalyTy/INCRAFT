@@ -3,204 +3,134 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>INCRAFT NETWORK</title>
+  <title>Admin INCRAFT</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #1e1e1e;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 2em;
+      background-color: #121212;
       color: white;
-      overflow-x: hidden;
     }
-
-    header {
-      text-align: center;
-      padding: 20px 0;
+    .hidden { display: none; }
+    .panel {
+      margin-top: 2em;
+      padding: 1em;
+      border: 1px solid #444;
+      background-color: #1e1e1e;
+      border-radius: 8px;
+      display: inline-block;
     }
-
-    header img {
-      width: 200px;
-      animation: logoFade 0.5s ease-out forwards;
-    }
-
-    @keyframes logoFade {
-      0% { transform: scale(10); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-
-    .slogan {
-      text-align: center;
-      font-size: 2rem;
-      margin-top: 10px;
-    }
-
-    .status-container {
-      margin: 30px auto;
-      padding: 20px;
-      max-width: 500px;
-      background: #2c2c2c;
-      border-radius: 10px;
-      text-align: center;
-      box-shadow: 0 0 20px #00000066;
-    }
-
-    .status-container h2 {
-      margin-bottom: 15px;
-    }
-
-    .copy-btn, .apply-btn {
-      padding: 10px 20px;
-      background-color: #00c853;
+    button {
+      background-color: #2196F3;
       color: white;
       border: none;
-      border-radius: 8px;
+      padding: 0.6em 1.2em;
+      margin: 0.5em;
+      border-radius: 5px;
       cursor: pointer;
-      margin-top: 15px;
-      transition: background 0.3s;
     }
-
-    .copy-btn:hover, .apply-btn:hover {
-      background-color: #00b349;
-    }
-
-    footer {
-      margin-top: 40px;
-      text-align: center;
-      padding: 20px;
-      background-color: #121212;
-      font-size: 0.9rem;
-    }
-
-    footer a {
-      color: #66ccff;
-      margin: 0 10px;
-      text-decoration: none;
-    }
-
-    .popup {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #323232;
-      color: white;
-      padding: 10px 20px;
-      border-radius: 8px;
-      opacity: 0;
-      transition: opacity 0.3s ease-in-out;
-      z-index: 1000;
-    }
-
-    .popup.show {
-      opacity: 1;
-    }
-
-    .maintenance-banner {
-      padding: 40px;
-      background: repeating-linear-gradient(
-        45deg,
-        #ffcc00,
-        #ffcc00 20px,
-        #000000 20px,
-        #000000 40px
-      );
-      background-size: 200% 200%;
-      animation: stripesMove 2s linear infinite;
-      color: white; /* Text en blanc */
-      text-align: center;
-      font-size: 2rem;
-      font-weight: bold;
-    }
-
-    @keyframes stripesMove {
-      from { background-position: 0 0; }
-      to { background-position: 100px 100px; }
-    }
-
-    @media (max-width: 600px) {
-      .slogan {
-        font-size: 1.5rem;
-      }
-
-      .status-container {
-        margin: 20px;
-      }
+    label {
+      display: block;
+      margin-top: 1em;
     }
   </style>
 </head>
 <body>
-  <header>
-    <img src="incraft-network-logo.png" alt="Logo INCRAFT NETWORK" />
-    <h1 class="slogan">¡Únete a la aventura en INCRAFT NETWORK!</h1>
-  </header>
+  <h1>Panel de administración de INCRAFT</h1>
+  <button id="login">Iniciar sesión</button>
+  <button id="logout" class="hidden">Cerrar sesión</button>
 
-  <div id="maintenance" class="maintenance-banner" style="display: none;">
-    🛠️ Servidor apagado o en mantenimiento. Vuelve pronto.
+  <div id="admin-panel" class="panel hidden">
+    <h2>Opciones de mantenimiento</h2>
+    <label>
+      <input type="checkbox" id="toggle-maintenance">
+      Activar modo mantenimiento
+    </label>
+    <label>
+      <input type="checkbox" id="toggle-apply">
+      Mostrar opción de postulación
+    </label>
   </div>
 
-  <div id="serverStatus" class="status-container" style="display: none;">
-    <h2>Estado del servidor</h2>
-    <p><strong>IP:</strong> play.incraft.network</p>
-    <p id="status">Cargando estado...</p>
-    <button class="copy-btn" onclick="copiarIP()">Copiar IP</button>
-    <div id="applyBtn" style="margin-top: 10px; display: none;">
-      <a href="https://bit.ly/pos-incraft" target="_blank">
-        <button class="apply-btn">Postulación</button>
-      </a>
-    </div>
-  </div>
+  <script type="module">
+    import createAuth0Client from 'https://cdn.auth0.com/js/auth0-spa-js/2.0/auth0-spa-js.production.esm.js';
 
-  <footer>
-    &copy; 2025 INCRAFT NETWORK · 
-    <a href="https://youtube.com/@incraftnetwork" target="_blank">YouTube</a> · 
-    <a href="https://discord.gg/APrYRZUqBT" target="_blank">Discord</a>
-  </footer>
+    const auth0Config = {
+      domain: "dev-hlv1jhp4knm0id5b.us.auth0.com",
+      clientId: "1FOpkOMjhPMKQiesX8YMzzKDnE3r35e4",
+      allowedAdminEmail: "incraft@mail.com"
+    };
 
-  <div id="popup" class="popup">¡IP copiada al portapapeles!</div>
+    let auth0 = null;
 
-  <script>
-    const maintenanceLocal = localStorage.getItem("modoMantenimiento") === "true";
-    const mostrarPostulacion = localStorage.getItem("mostrarPostulacion") === "true";
-    const maintenanceBanner = document.getElementById("maintenance");
-    const serverStatus = document.getElementById("serverStatus");
-    const statusText = document.getElementById("status");
-    const popup = document.getElementById("popup");
-    const applyBtn = document.getElementById("applyBtn");
+    const loginButton = document.getElementById('login');
+    const logoutButton = document.getElementById('logout');
+    const adminPanel = document.getElementById('admin-panel');
+    const maintenanceToggle = document.getElementById('toggle-maintenance');
+    const applyToggle = document.getElementById('toggle-apply');
 
-    if (mostrarPostulacion) applyBtn.style.display = "block";
-
-    function copiarIP() {
-      navigator.clipboard.writeText("play.incraft.network").then(() => {
-        popup.classList.add("show");
-        setTimeout(() => popup.classList.remove("show"), 2500);
+    async function configureAuth() {
+      auth0 = await createAuth0Client({
+        domain: auth0Config.domain,
+        client_id: auth0Config.clientId,
+        language: 'es'
       });
-    }
 
-    async function comprobarServidor() {
-      try {
-        const res = await fetch("https://api.mcsrvstat.us/3/emerald.magmanode.com:29013");
-        const data = await res.json();
+      if (window.location.search.includes("code=") &&
+          window.location.search.includes("state=")) {
+        await auth0.handleRedirectCallback();
+        window.history.replaceState({}, document.title, "/admin.html");
+      }
 
-        const online = data.online;
-        if (!online || maintenanceLocal) {
-          maintenanceBanner.style.display = "block";
-          serverStatus.style.display = "none";
+      const isAuthenticated = await auth0.isAuthenticated();
+
+      if (isAuthenticated) {
+        const user = await auth0.getUser();
+
+        if (user.email === auth0Config.allowedAdminEmail) {
+          loginButton.classList.add('hidden');
+          logoutButton.classList.remove('hidden');
+          adminPanel.classList.remove('hidden');
+
+          maintenanceToggle.checked = localStorage.getItem('modoMantenimiento') === 'true';
+          applyToggle.checked = localStorage.getItem('mostrarPostulacion') === 'true';
+
+          maintenanceToggle.onchange = () => {
+            localStorage.setItem('modoMantenimiento', maintenanceToggle.checked);
+          };
+          applyToggle.onchange = () => {
+            localStorage.setItem('mostrarPostulacion', applyToggle.checked);
+          };
+
         } else {
-          serverStatus.style.display = "block";
-          maintenanceBanner.style.display = "none";
-          statusText.innerText = `🟢 Online — ${data.players.online}/${data.players.max}`;
+          alert("No tienes permisos para acceder a este panel.");
+          await auth0.logout({ logoutParams: { returnTo: window.location.href } });
         }
-      } catch (err) {
-        maintenanceBanner.style.display = "block";
-        serverStatus.style.display = "none";
+      } else {
+        loginButton.classList.remove('hidden');
+        logoutButton.classList.add('hidden');
+        adminPanel.classList.add('hidden');
       }
     }
 
-    comprobarServidor();
+    loginButton.addEventListener("click", async () => {
+      await auth0.loginWithRedirect({
+        authorizationParams: {
+          redirect_uri: window.location.href
+        }
+      });
+    });
+
+    logoutButton.addEventListener("click", async () => {
+      await auth0.logout({
+        logoutParams: {
+          returnTo: window.location.href
+        }
+      });
+    });
+
+    window.onload = configureAuth;
   </script>
 </body>
 </html>
