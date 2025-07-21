@@ -2,56 +2,55 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Admin INCRAFT</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panel Admin – INCRAFT</title>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
+      font-family: sans-serif;
       text-align: center;
-      padding: 2em;
-      background-color: #0f0f0f;
-      color: white;
+      margin-top: 100px;
+      color: #222;
     }
-    .hidden { display: none; }
-    .panel {
-      margin-top: 2em;
-      padding: 1.5em;
-      border: 1px solid #333;
-      background-color: #1c1c1c;
-      border-radius: 12px;
-      display: inline-block;
-      box-shadow: 0 0 15px rgba(0,0,0,0.3);
-    }
-    button {
-      background-color: #2b8af7;
-      color: white;
-      border: none;
-      padding: 0.7em 1.5em;
-      margin: 1em;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1em;
-    }
-    button:hover {
-      background-color: #1976d2;
+    #admin-content {
+      display: none;
+      margin-top: 30px;
     }
     label {
       display: block;
-      margin-top: 1.5em;
-      font-size: 1.1em;
+      margin: 15px auto;
+      font-size: 18px;
+      max-width: 300px;
+      cursor: pointer;
     }
     input[type="checkbox"] {
-      transform: scale(1.4);
-      margin-right: 0.5em;
+      margin-right: 10px;
+      transform: scale(1.3);
+      vertical-align: middle;
+      cursor: pointer;
+    }
+    button {
+      cursor: pointer;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: none;
+      background-color: #0077ff;
+      color: white;
+      margin-top: 15px;
+    }
+    button:hover {
+      background-color: #005fcc;
     }
   </style>
 </head>
 <body>
-  <h1>Panel de administración de INCRAFT</h1>
-  <button id="login">Iniciar sesión</button>
+  <h1>Panel de Administración</h1>
+  <div id="login-area">
+    <button id="login">Iniciar sesión</button>
+  </div>
 
-  <div id="admin-panel" class="panel hidden">
-    <h2>Opciones del servidor</h2>
+  <div id="admin-content">
+    <p>¡Bienvenido, administrador!</p>
     <label>
       <input type="checkbox" id="toggle-maintenance" />
       Activar modo mantenimiento
@@ -60,37 +59,41 @@
       <input type="checkbox" id="toggle-apply" />
       Mostrar opción de postulación
     </label>
+    <button id="logout">Cerrar sesión</button>
   </div>
 
-  <!-- Càrrega Auth0 des de CDN, script global -->
-  <script src="https://cdn.auth0.com/js/auth0-spa-js/2.0/auth0-spa-js.production.js"></script>
+  <script type="module">
+    import { createAuth0Client } from 'https://cdn.auth0.com/js/auth0-spa-js/2.0/auth0-spa-js.production.esm.js';
 
-  <script>
-    const auth0Config = {
+    const config = {
       domain: "dev-hlv1jhp4knm0id5b.us.auth0.com",
-      clientId: "1FOpkOMjhPMKQiesX8YMzzKDnE3r35e4",
+      client_id: "1FOpkOMjhPMKQiesX8YMzzKDnE3r35e4",
+      authorizationParams: {
+        redirect_uri: window.location.origin + window.location.pathname
+      },
       allowedAdminEmail: "incraft@mail.com"
     };
 
-    const loginButton = document.getElementById('login');
-    const adminPanel = document.getElementById('admin-panel');
-    const maintenanceToggle = document.getElementById('toggle-maintenance');
-    const applyToggle = document.getElementById('toggle-apply');
-
     let auth0 = null;
+
+    const loginBtn = document.getElementById("login");
+    const logoutBtn = document.getElementById("logout");
+    const loginArea = document.getElementById("login-area");
+    const adminContent = document.getElementById("admin-content");
+    const maintenanceToggle = document.getElementById("toggle-maintenance");
+    const applyToggle = document.getElementById("toggle-apply");
 
     async function configureAuth() {
       auth0 = await createAuth0Client({
-        domain: auth0Config.domain,
-        client_id: auth0Config.clientId,
-        authorizationParams: {
-          redirect_uri: window.location.href
-        }
+        domain: config.domain,
+        client_id: config.client_id,
+        authorizationParams: config.authorizationParams
       });
 
+      // Gestionar callback de Auth0
       if (window.location.search.includes("code=") && window.location.search.includes("state=")) {
         await auth0.handleRedirectCallback();
-        window.history.replaceState({}, document.title, "/admin.html");
+        window.history.replaceState({}, document.title, window.location.pathname);
       }
 
       const isAuthenticated = await auth0.isAuthenticated();
@@ -98,31 +101,43 @@
       if (isAuthenticated) {
         const user = await auth0.getUser();
 
-        if (user.email === auth0Config.allowedAdminEmail) {
-          loginButton.classList.add('hidden');
-          adminPanel.classList.remove('hidden');
+        if (user.email === config.allowedAdminEmail) {
+          // Mostrar admin
+          loginArea.style.display = "none";
+          adminContent.style.display = "block";
 
-          maintenanceToggle.checked = localStorage.getItem('modoMantenimiento') === 'true';
-          applyToggle.checked = localStorage.getItem('mostrarPostulacion') === 'true';
+          // Carregar estats des de localStorage
+          maintenanceToggle.checked = localStorage.getItem("modoMantenimiento") === "true";
+          applyToggle.checked = localStorage.getItem("mostrarPostulacion") === "true";
 
+          // Quan canviïn, guardar a localStorage
           maintenanceToggle.onchange = () => {
-            localStorage.setItem('modoMantenimiento', maintenanceToggle.checked);
+            localStorage.setItem("modoMantenimiento", maintenanceToggle.checked);
           };
+
           applyToggle.onchange = () => {
-            localStorage.setItem('mostrarPostulacion', applyToggle.checked);
+            localStorage.setItem("mostrarPostulacion", applyToggle.checked);
           };
+
         } else {
-          alert("No tienes permisos para acceder a este panel.");
-          await auth0.logout({ logoutParams: { returnTo: window.location.href } });
+          alert("No tienes permisos para acceder.");
+          await auth0.logout({ logoutParams: { returnTo: window.location.origin } });
         }
       } else {
-        loginButton.classList.remove('hidden');
-        adminPanel.classList.add('hidden');
+        // No autenticat
+        loginArea.style.display = "block";
+        adminContent.style.display = "none";
       }
     }
 
-    loginButton.addEventListener("click", () => {
-      auth0.loginWithRedirect();
+    loginBtn.addEventListener("click", async () => {
+      if (!auth0) return alert("Cargando...");
+      await auth0.loginWithRedirect();
+    });
+
+    logoutBtn.addEventListener("click", async () => {
+      if (!auth0) return;
+      await auth0.logout({ logoutParams: { returnTo: window.location.origin } });
     });
 
     window.onload = configureAuth;
