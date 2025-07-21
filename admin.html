@@ -1,94 +1,67 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="ca">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Panel de Administración | INCRAFT NETWORK</title>
+  <title>INCRAFT Admin</title>
+  <script src="https://cdn.auth0.com/js/auth0-spa-js/2.0/auth0-spa-js.production.js"></script>
   <style>
     body {
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #0f0f0f;
+      font-family: sans-serif;
+      background-color: #111;
       color: white;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 2rem;
+      justify-content: center;
+      min-height: 100vh;
     }
 
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    .login-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-top: 4rem;
-    }
-
-    .login-container input {
-      padding: 10px;
-      font-size: 1rem;
-      border-radius: 8px;
-      border: none;
-      margin-bottom: 10px;
-      width: 250px;
-    }
-
-    .login-container button {
+    #login, #logout {
       padding: 10px 20px;
-      font-size: 1rem;
-      background-color: #4CAF50;
+      background: #0077ff;
       border: none;
-      border-radius: 8px;
-      cursor: pointer;
+      border-radius: 10px;
       color: white;
+      cursor: pointer;
+      margin: 10px;
     }
 
-    .panel {
-      max-width: 400px;
-      width: 100%;
-      margin-top: 2rem;
-      background-color: #1a1a1a;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 0 15px rgba(0, 255, 0, 0.2);
-      opacity: 0;
-      transform: translateY(20px);
-      transition: all 0.4s ease;
+    #admin-panel {
       display: none;
+      margin-top: 20px;
+      padding: 20px;
+      background: #222;
+      border-radius: 20px;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+      width: 90%;
+      max-width: 500px;
     }
 
-    .panel.visible {
-      display: block;
-      opacity: 1;
-      transform: translateY(0);
+    h2 {
+      text-align: center;
     }
 
     .toggle-container {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      margin: 1rem 0;
+      justify-content: space-between;
+      margin: 15px 0;
     }
 
-    .toggle-label {
-      font-size: 1rem;
+    .toggle-container span {
+      font-size: 1.1em;
     }
 
-    .toggle {
+    .switch {
       position: relative;
+      display: inline-block;
       width: 50px;
-      height: 26px;
+      height: 28px;
     }
 
-    .toggle input {
+    .switch input {
       opacity: 0;
       width: 0;
       height: 0;
@@ -97,18 +70,20 @@
     .slider {
       position: absolute;
       cursor: pointer;
-      top: 0; left: 0;
-      right: 0; bottom: 0;
-      background-color: #888;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #666;
       transition: 0.4s;
-      border-radius: 34px;
+      border-radius: 30px;
     }
 
     .slider:before {
       position: absolute;
       content: "";
-      height: 18px;
-      width: 18px;
+      height: 20px;
+      width: 20px;
       left: 4px;
       bottom: 4px;
       background-color: white;
@@ -117,73 +92,95 @@
     }
 
     input:checked + .slider {
-      background-color: #4CAF50;
+      background-color: #00cc00;
     }
 
     input:checked + .slider:before {
-      transform: translateX(24px);
+      transform: translateX(22px);
     }
   </style>
 </head>
 <body>
-  <h1>Panel de Administración</h1>
+  <h1>INCRAFT Admin Panel</h1>
 
-  <div class="login-container" id="login-container">
-    <input type="password" id="password" placeholder="Introduce la contraseña" />
-    <button onclick="checkPassword()">Acceder</button>
-  </div>
+  <button id="login">Inicia sessió</button>
+  <button id="logout" style="display:none;">Tanca sessió</button>
 
-  <div class="panel" id="admin-panel">
+  <div id="admin-panel">
+    <h2>Configuració del servidor</h2>
+
     <div class="toggle-container">
-      <span class="toggle-label">Modo mantenimiento</span>
-      <label class="toggle">
-        <input type="checkbox" id="maintenance-toggle">
+      <span>🛠️ Mode Manteniment</span>
+      <label class="switch">
+        <input type="checkbox" id="toggle-maintenance">
         <span class="slider"></span>
       </label>
     </div>
 
     <div class="toggle-container">
-      <span class="toggle-label">Botón de postulación</span>
-      <label class="toggle">
-        <input type="checkbox" id="postulacion-toggle">
+      <span>💬 Mostrar botó de postular</span>
+      <label class="switch">
+        <input type="checkbox" id="toggle-apply">
         <span class="slider"></span>
       </label>
     </div>
   </div>
 
   <script>
-    const passwordCorrecta = "admin123";
-    const loginContainer = document.getElementById("login-container");
-    const panel = document.getElementById("admin-panel");
-    const maintenanceToggle = document.getElementById("maintenance-toggle");
-    const postulacionToggle = document.getElementById("postulacion-toggle");
+    const auth0Config = {
+      domain: "dev-hlv1jhp4knm0id5b.us.auth0.com",
+      clientId: "1FOpkOMjhPMKQiesX8YMzzKDnE3r35e4"
+    };
 
-    function checkPassword() {
-      const input = document.getElementById("password").value;
-      if (input === passwordCorrecta) {
-        loginContainer.style.display = "none";
-        panel.style.display = "block";
-        setTimeout(() => {
-          panel.classList.add("visible");
-        }, 50);
-      } else {
-        alert("Contraseña incorrecta");
+    let auth0 = null;
+
+    const loginButton = document.getElementById('login');
+    const logoutButton = document.getElementById('logout');
+    const adminPanel = document.getElementById('admin-panel');
+
+    async function configureAuth() {
+      auth0 = await createAuth0Client({
+        domain: auth0Config.domain,
+        client_id: auth0Config.clientId
+      });
+
+      // Gestiona la redirecció després del login
+      if (window.location.search.includes("code=") &&
+          window.location.search.includes("state=")) {
+        await auth0.handleRedirectCallback();
+        window.history.replaceState({}, document.title, "/admin.html");
       }
+
+      const isAuthenticated = await auth0.isAuthenticated();
+
+      if (isAuthenticated) {
+        loginButton.style.display = 'none';
+        logoutButton.style.display = 'inline-block';
+        adminPanel.style.display = 'block';
+      } else {
+        loginButton.style.display = 'inline-block';
+        logoutButton.style.display = 'none';
+        adminPanel.style.display = 'none';
+      }
+
+      loginButton.addEventListener("click", async () => {
+        await auth0.loginWithRedirect({
+          authorizationParams: {
+            redirect_uri: window.location.href
+          }
+        });
+      });
+
+      logoutButton.addEventListener("click", () => {
+        auth0.logout({
+          logoutParams: {
+            returnTo: window.location.href
+          }
+        });
+      });
     }
 
-    maintenanceToggle.addEventListener("change", () => {
-      localStorage.setItem("maintenanceMode", maintenanceToggle.checked ? "on" : "off");
-    });
-
-    postulacionToggle.addEventListener("change", () => {
-      localStorage.setItem("postulacionVisible", postulacionToggle.checked ? "on" : "off");
-    });
-
-    window.addEventListener("DOMContentLoaded", () => {
-      // Restaurar valors dels toggles
-      maintenanceToggle.checked = localStorage.getItem("maintenanceMode") === "on";
-      postulacionToggle.checked = localStorage.getItem("postulacionVisible") === "on";
-    });
+    window.onload = configureAuth;
   </script>
 </body>
 </html>
