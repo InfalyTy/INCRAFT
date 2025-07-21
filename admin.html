@@ -1,164 +1,26 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Panel Admin – INCRAFT</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin-top: 100px;
-      background-color: #121212;
-      color: white;
-    }
-    #admin-content {
-      display: none;
-      margin-top: 30px;
-      max-width: 400px;
-      margin-left: auto;
-      margin-right: auto;
-      padding: 20px;
-      background: #222;
-      border-radius: 10px;
-    }
-    label {
-      display: block;
-      margin: 20px 0 10px;
-      font-size: 18px;
-      cursor: pointer;
-      user-select: none;
-    }
-    input[type="checkbox"] {
-      transform: scale(1.4);
-      margin-right: 10px;
-      vertical-align: middle;
-      cursor: pointer;
-    }
-    button {
-      cursor: pointer;
-      padding: 10px 20px;
-      font-size: 16px;
-      border-radius: 8px;
-      border: none;
-      background-color: #0077ff;
-      color: white;
-      margin-top: 15px;
-      transition: background-color 0.3s;
-    }
-    button:hover {
-      background-color: #005fcc;
-    }
-    #login-area {
-      margin-top: 20px;
-    }
-  </style>
-</head>
+<head><meta charset="UTF-8" /><title>Auth0 Test</title></head>
 <body>
-  <h1>Panel de Administración – INCRAFT</h1>
-
-  <div id="login-area">
-    <button id="login">Iniciar sesión</button>
-  </div>
-
-  <div id="admin-content">
-    <p>¡Bienvenido, administrador!</p>
-
-    <label for="toggle-maintenance">
-      <input type="checkbox" id="toggle-maintenance" />
-      Activar modo mantenimiento
-    </label>
-
-    <label for="toggle-apply">
-      <input type="checkbox" id="toggle-apply" />
-      Mostrar opción de postulación
-    </label>
-
-    <button id="logout">Cerrar sesión</button>
-  </div>
-
+  <button id="login">Iniciar sesión</button>
   <script type="module">
     import { createAuth0Client } from "https://cdn.auth0.com/js/auth0-spa-js/2.0/auth0-spa-js.production.esm.js";
 
-    const config = {
-      domain: "dev-hlv1jhp4knm0id5b.us.auth0.com",
-      client_id: "1FOpkOMjhPMKQiesX8YMzzKDnE3r35e4",
-      allowedAdminEmail: "incraft@mail.com"
-    };
-
-    let auth0 = null;
-
-    const loginBtn = document.getElementById("login");
-    const logoutBtn = document.getElementById("logout");
-    const loginArea = document.getElementById("login-area");
-    const adminContent = document.getElementById("admin-content");
-    const maintenanceToggle = document.getElementById("toggle-maintenance");
-    const applyToggle = document.getElementById("toggle-apply");
-
-    async function initAuth() {
-      auth0 = await createAuth0Client({
-        domain: config.domain,
-        client_id: config.client_id,
+    async function main() {
+      const auth0 = await createAuth0Client({
+        domain: "dev-hlv1jhp4knm0id5b.us.auth0.com",
+        client_id: "1FOpkOMjhPMKQiesX8YMzzKDnE3r35e4",
         authorizationParams: {
-          redirect_uri: window.location.origin + window.location.pathname
+          redirect_uri: window.location.origin
         }
       });
 
-      // Gestionar callback d'Auth0 (després de login)
-      if (window.location.search.includes("code=") && window.location.search.includes("state=")) {
-        await auth0.handleRedirectCallback();
-        window.history.replaceState({}, document.title, window.location.pathname);
-      }
-
-      const isAuthenticated = await auth0.isAuthenticated();
-
-      if (isAuthenticated) {
-        const user = await auth0.getUser();
-
-        if (user.email === config.allowedAdminEmail) {
-          mostrarPanelAdmin();
-        } else {
-          alert("No tienes permisos para acceder a este panel.");
-          await auth0.logout({ logoutParams: { returnTo: window.location.origin } });
-        }
-      } else {
-        mostrarLogin();
-      }
-    }
-
-    function mostrarPanelAdmin() {
-      loginArea.style.display = "none";
-      adminContent.style.display = "block";
-
-      // Carregar valors guardats
-      maintenanceToggle.checked = localStorage.getItem("modoMantenimiento") === "true";
-      applyToggle.checked = localStorage.getItem("mostrarPostulacion") === "true";
-
-      maintenanceToggle.onchange = () => {
-        localStorage.setItem("modoMantenimiento", maintenanceToggle.checked);
-      };
-
-      applyToggle.onchange = () => {
-        localStorage.setItem("mostrarPostulacion", applyToggle.checked);
+      document.getElementById("login").onclick = () => {
+        auth0.loginWithRedirect();
       };
     }
 
-    function mostrarLogin() {
-      loginArea.style.display = "block";
-      adminContent.style.display = "none";
-    }
-
-    loginBtn.addEventListener("click", () => {
-      auth0.loginWithRedirect();
-    });
-
-    logoutBtn.addEventListener("click", () => {
-      auth0.logout({ logoutParams: { returnTo: window.location.origin } });
-    });
-
-    window.onload = () => {
-      initAuth();
-    };
+    main();
   </script>
 </body>
 </html>
