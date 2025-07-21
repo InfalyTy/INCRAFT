@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Admin INCRAFT</title>
   <style>
     body {
@@ -53,40 +53,42 @@
   <div id="admin-panel" class="panel hidden">
     <h2>Opciones del servidor</h2>
     <label>
-      <input type="checkbox" id="toggle-maintenance">
+      <input type="checkbox" id="toggle-maintenance" />
       Activar modo mantenimiento
     </label>
     <label>
-      <input type="checkbox" id="toggle-apply">
+      <input type="checkbox" id="toggle-apply" />
       Mostrar opción de postulación
     </label>
   </div>
 
-  <script type="module">
-    import createAuth0Client from 'https://cdn.auth0.com/js/auth0-spa-js/2.0/auth0-spa-js.production.js';
+  <!-- Càrrega Auth0 des de CDN, script global -->
+  <script src="https://cdn.auth0.com/js/auth0-spa-js/2.0/auth0-spa-js.production.js"></script>
 
+  <script>
     const auth0Config = {
       domain: "dev-hlv1jhp4knm0id5b.us.auth0.com",
       clientId: "1FOpkOMjhPMKQiesX8YMzzKDnE3r35e4",
       allowedAdminEmail: "incraft@mail.com"
     };
 
-    let auth0 = null;
-
     const loginButton = document.getElementById('login');
     const adminPanel = document.getElementById('admin-panel');
     const maintenanceToggle = document.getElementById('toggle-maintenance');
     const applyToggle = document.getElementById('toggle-apply');
 
+    let auth0 = null;
+
     async function configureAuth() {
       auth0 = await createAuth0Client({
         domain: auth0Config.domain,
         client_id: auth0Config.clientId,
-        language: 'es'
+        authorizationParams: {
+          redirect_uri: window.location.href
+        }
       });
 
-      if (window.location.search.includes("code=") &&
-          window.location.search.includes("state=")) {
+      if (window.location.search.includes("code=") && window.location.search.includes("state=")) {
         await auth0.handleRedirectCallback();
         window.history.replaceState({}, document.title, "/admin.html");
       }
@@ -119,12 +121,8 @@
       }
     }
 
-    loginButton.addEventListener("click", async () => {
-      await auth0.loginWithRedirect({
-        authorizationParams: {
-          redirect_uri: window.location.href
-        }
-      });
+    loginButton.addEventListener("click", () => {
+      auth0.loginWithRedirect();
     });
 
     window.onload = configureAuth;
