@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ca">
+<html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>INCRAFT Admin</title>
+  <title>Panel de Administración INCRAFT</title>
   <script src="https://cdn.auth0.com/js/auth0-spa-js/2.0/auth0-spa-js.production.js"></script>
   <style>
     body {
@@ -100,26 +100,26 @@
   </style>
 </head>
 <body>
-  <h1>INCRAFT Admin Panel</h1>
+  <h1>Panel de Administración INCRAFT</h1>
 
-  <button id="login">Inicia sessió</button>
-  <button id="logout" style="display:none;">Tanca sessió</button>
+  <button id="login">Iniciar sesión</button>
+  <button id="logout" style="display:none;">Cerrar sesión</button>
 
   <div id="admin-panel" aria-live="polite" aria-atomic="true">
-    <h2>Configuració del servidor</h2>
+    <h2>Configuración del servidor</h2>
 
     <div class="toggle-container">
-      <span>🛠️ Mode Manteniment</span>
+      <span>🛠️ Modo Mantenimiento</span>
       <label class="switch">
-        <input type="checkbox" id="toggle-maintenance" aria-label="Mode Manteniment" />
+        <input type="checkbox" id="toggle-maintenance" aria-label="Modo Mantenimiento" />
         <span class="slider"></span>
       </label>
     </div>
 
     <div class="toggle-container">
-      <span>💬 Mostrar botó de postular</span>
+      <span>💬 Mostrar botón de postulación</span>
       <label class="switch">
-        <input type="checkbox" id="toggle-apply" aria-label="Mostrar botó de postular" />
+        <input type="checkbox" id="toggle-apply" aria-label="Mostrar botón de postulación" />
         <span class="slider"></span>
       </label>
     </div>
@@ -162,11 +162,11 @@
           logoutButton.style.display = 'inline-block';
           adminPanel.style.display = 'block';
 
-          // Carrega estats guardats
+          // Carga estados guardados
           maintenanceToggle.checked = localStorage.getItem('modoMantenimiento') === 'true';
           applyToggle.checked = localStorage.getItem('mostrarPostulacion') === 'true';
 
-          // Guarda els canvis
+          // Guarda los cambios
           maintenanceToggle.onchange = () => {
             localStorage.setItem('modoMantenimiento', maintenanceToggle.checked);
           };
@@ -175,7 +175,7 @@
           };
 
         } else {
-          alert("No tens permisos per accedir a aquest panell.");
+          alert("No tienes permisos para acceder a este panel.");
           await auth0.logout({ logoutParams: { returnTo: window.location.href } });
         }
       } else {
@@ -193,8 +193,8 @@
       });
     });
 
-    logoutButton.addEventListener("click", () => {
-      auth0.logout({
+    logoutButton.addEventListener("click", async () => {
+      await auth0.logout({
         logoutParams: {
           returnTo: window.location.href
         }
