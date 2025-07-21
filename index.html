@@ -110,7 +110,7 @@
       );
       background-size: 200% 200%;
       animation: stripesMove 2s linear infinite;
-      color: white;
+      color: white; /* Text en blanc */
       text-align: center;
       font-size: 2rem;
       font-weight: bold;
@@ -169,8 +169,8 @@
     const serverStatus = document.getElementById("serverStatus");
     const statusText = document.getElementById("status");
     const popup = document.getElementById("popup");
-
     const applyBtn = document.getElementById("applyBtn");
+
     if (mostrarPostulacion) applyBtn.style.display = "block";
 
     function copiarIP() {
@@ -191,6 +191,7 @@
           serverStatus.style.display = "none";
         } else {
           serverStatus.style.display = "block";
+          maintenanceBanner.style.display = "none";
           statusText.innerText = `🟢 Online — ${data.players.online}/${data.players.max}`;
         }
       } catch (err) {
