@@ -2,49 +2,51 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Panel Admin – INCRAFT</title>
   <style>
     body {
-      font-family: sans-serif;
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: #fff;
       text-align: center;
-      margin-top: 100px;
+      padding-top: 80px;
+    }
+    h1 {
+      color: #00ccff;
+    }
+    button {
+      background: #00ccff;
+      color: black;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background: #00aacc;
     }
     #admin-content {
       display: none;
       margin-top: 30px;
     }
-    label {
+    .slider-container {
+      margin-top: 40px;
+    }
+    .slider-container label {
       display: block;
-      margin: 20px 0 10px;
-      font-size: 18px;
-      cursor: pointer;
-      user-select: none;
+      margin-bottom: 10px;
     }
-    input[type="checkbox"] {
-      transform: scale(1.4);
-      margin-right: 10px;
-      vertical-align: middle;
-      cursor: pointer;
-    }
-    button {
-      cursor: pointer;
-      padding: 10px 20px;
-      font-size: 16px;
-      border-radius: 8px;
-      border: none;
-      background-color: #0077ff;
-      color: white;
-      margin-top: 15px;
-      transition: background-color 0.3s;
-    }
-    button:hover {
-      background-color: #005fcc;
+    .slider {
+      width: 300px;
     }
   </style>
 </head>
 <body>
-  <h1>Panel de Administración – INCRAFT</h1>
+  <h1>Panel de Administración</h1>
 
   <div id="login-area">
     <button id="login">Iniciar sesión</button>
@@ -53,17 +55,15 @@
   <div id="admin-content">
     <p>¡Bienvenido, administrador!</p>
 
-    <label for="toggle-maintenance">
-      <input type="checkbox" id="toggle-maintenance" />
-      Activar modo mantenimiento
-    </label>
+    <div class="slider-container">
+      <label for="slider1">Volumen Música:</label>
+      <input type="range" id="slider1" class="slider" min="0" max="100" value="50">
+    </div>
 
-    <label for="toggle-apply">
-      <input type="checkbox" id="toggle-apply" />
-      Mostrar opción de postulación
-    </label>
-
-    <button id="logout">Cerrar sesión</button>
+    <div class="slider-container">
+      <label for="slider2">Brillo LEDs:</label>
+      <input type="range" id="slider2" class="slider" min="0" max="100" value="75">
+    </div>
   </div>
 
   <script type="module">
@@ -100,25 +100,6 @@
         if (user.email === config.allowedAdminEmail) {
           document.getElementById("login-area").style.display = "none";
           document.getElementById("admin-content").style.display = "block";
-
-          // Carregar valors guardats
-          const maintenanceValue = localStorage.getItem('modoMantenimiento') === 'true';
-          const applyValue = localStorage.getItem('mostrarPostulacion') === 'true';
-
-          const maintenanceToggle = document.getElementById('toggle-maintenance');
-          const applyToggle = document.getElementById('toggle-apply');
-
-          maintenanceToggle.checked = maintenanceValue;
-          applyToggle.checked = applyValue;
-
-          maintenanceToggle.onchange = () => {
-            localStorage.setItem('modoMantenimiento', maintenanceToggle.checked);
-          };
-
-          applyToggle.onchange = () => {
-            localStorage.setItem('mostrarPostulacion', applyToggle.checked);
-          };
-
         } else {
           alert("No tienes permisos para acceder.");
           await auth0.logout({ logoutParams: { returnTo: window.location.origin } });
@@ -126,11 +107,11 @@
       }
 
       document.getElementById("login").addEventListener("click", () => {
-        auth0.loginWithRedirect();
-      });
-
-      document.getElementById("logout").addEventListener("click", () => {
-        auth0.logout({ logoutParams: { returnTo: window.location.origin } });
+        auth0.loginWithRedirect({
+          authorizationParams: {
+            prompt: "login"
+          }
+        });
       });
     }
 
