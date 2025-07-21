@@ -2,63 +2,51 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Admin - INCRAFT</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panel Admin – INCRAFT</title>
   <style>
     body {
       font-family: sans-serif;
       text-align: center;
-      padding: 40px;
-      background-color: #f0f0f0;
+      margin-top: 100px;
     }
     #admin-content {
       display: none;
     }
-    #login {
-      padding: 12px 20px;
-      font-size: 1rem;
-      cursor: pointer;
-      border: none;
-      background-color: #2196f3;
-      color: white;
-      border-radius: 6px;
-    }
-    #logout {
-      margin-top: 20px;
-      background-color: #e53935;
-    }
   </style>
 </head>
 <body>
-  <h1>Panel de Administración INCRAFT</h1>
-  <div id="buttons">
+  <h1>Panel de Administración</h1>
+  <div id="login-area">
     <button id="login">Iniciar sesión</button>
   </div>
+
   <div id="admin-content">
-    <p>Bienvenido, administrador.</p>
+    <p>¡Bienvenido, administrador!</p>
     <button id="logout">Cerrar sesión</button>
   </div>
 
   <script type="module">
-    import createAuth0Client from 'https://cdn.auth0.com/js/auth0-spa-js/2.0/auth0-spa-js.production.esm.js';
+    import { createAuth0Client } from 'https://cdn.auth0.com/js/auth0-spa-js/2.0/auth0-spa-js.production.esm.js';
 
-    const auth0Config = {
+    const config = {
       domain: "dev-hlv1jhp4knm0id5b.us.auth0.com",
       clientId: "1FOpkOMjhPMKQiesX8YMzzKDnE3r35e4",
-      allowedAdminEmail: "incraft@mail.com"
+      authorizationParams: {
+        redirect_uri: window.location.href
+      },
+      allowedAdminEmail: "incraft@mail.com" // <-- El teu correu aquí
     };
 
     let auth0 = null;
 
-    const configureAuth = async () => {
+    async function configureAuth() {
       auth0 = await createAuth0Client({
-        domain: auth0Config.domain,
-        client_id: auth0Config.clientId,
-        cacheLocation: 'localstorage',
-        useRefreshTokens: true,
+        domain: config.domain,
+        clientId: config.clientId,
+        authorizationParams: config.authorizationParams
       });
 
-      // Redirección después del login
       const query = window.location.search;
       if (query.includes("code=") && query.includes("state=")) {
         await auth0.handleRedirectCallback();
@@ -69,34 +57,25 @@
 
       if (isAuthenticated) {
         const user = await auth0.getUser();
-
-        if (user.email === auth0Config.allowedAdminEmail) {
+        if (user.email === config.allowedAdminEmail) {
+          document.getElementById("login-area").style.display = "none";
           document.getElementById("admin-content").style.display = "block";
-          document.getElementById("buttons").style.display = "none";
         } else {
-          alert("Acceso denegado. No tienes permisos para acceder.");
-          await auth0.logout({ returnTo: window.location.origin });
+          alert("No tienes permisos para acceder.");
+          await auth0.logout({ logoutParams: { returnTo: window.location.origin } });
         }
       }
-    };
 
-    window.addEventListener("DOMContentLoaded", async () => {
-      await configureAuth();
-
-      document.getElementById("login").addEventListener("click", async () => {
-        await auth0.loginWithRedirect({
-          authorizationParams: {
-            redirect_uri: window.location.origin + "/admin.html",
-            prompt: "login",
-            ui_locales: "es"
-          }
-        });
+      document.getElementById("login").addEventListener("click", () => {
+        auth0.loginWithRedirect();
       });
 
       document.getElementById("logout").addEventListener("click", () => {
-        auth0.logout({ returnTo: window.location.origin + "/admin.html" });
+        auth0.logout({ logoutParams: { returnTo: window.location.origin } });
       });
-    });
+    }
+
+    configureAuth();
   </script>
 </body>
 </html>
